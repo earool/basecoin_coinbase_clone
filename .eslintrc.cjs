@@ -7,7 +7,7 @@ module.exports = {
     'airbnb',
     'airbnb/hooks',
     'plugin:react/recommended',
-    'plugin/prettier/recommended',
+    'plugin:prettier/recommended',
   ],
   overrides: [],
   parserOptions: {
@@ -15,7 +15,5 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', 'prettier'],
-  rules: {
-    'react/react-in-jsx-scope': 0,
-  },
+  rules: {},
 };
