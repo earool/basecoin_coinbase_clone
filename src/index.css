@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
+
+@layer utilities {
+  .gray-border {
+    border-color: gray-border;
+  }
+
+  .custom-bg-btn {
+    @apply bg-my-blue text-white
+  }
+
+  .custom-bg-btn:hover {
+    @apply bg-my-blue-darker
+  }
+}
+
 @tailwind utilities;
