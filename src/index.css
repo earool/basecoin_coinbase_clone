@@ -7,12 +7,25 @@
   }
 
   .custom-bg-btn {
-    @apply bg-my-blue text-white
+    @apply bg-my-blue text-white;
   }
 
   .custom-bg-btn:hover {
-    @apply bg-my-blue-darker
+    @apply bg-my-blue-darker;
   }
+
+  .custom-label-div {
+    @apply flex mt-2 flex-col font-medium;
+  }
+
+  .custom-input {
+    @apply w-full h-[2.75rem] py-2 mt-2 border border-gray-border-darker rounded-md p-2 focus:outline-none focus:border-my-blue-darker focus:border-2;
+  }
+
+  .invalid-input {
+    @apply w-full h-[2.75rem] py-2 mt-2 border bg-red-100 border-red-600 rounded-md p-2 focus:outline-none focus:border-2;
+  }
+
 }
 
 @tailwind utilities;
