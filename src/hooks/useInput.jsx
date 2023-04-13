@@ -29,6 +29,10 @@ function useInput(label, description, validateValue) {
       {errorMessage}
     </p>
   );
+  const reset = () => {
+    setEnteredValue('');
+    setIsTouched(false);
+  };
 
   return {
     value: enteredValue,
@@ -37,6 +41,7 @@ function useInput(label, description, validateValue) {
     classesName,
     valueChangeHandler,
     inputBlurHandler,
+    reset,
   };
 }
 
