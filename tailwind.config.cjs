@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -13,8 +14,8 @@ module.exports = {
         'gray-border-darker': '#5B616EAB',
       },
       gridTemplateColumns: {
-        sidebar: '200px 1fr',
-        sidebarSmall: '80px 1fr',
+        lgGrid: '200px 1fr',
+        smGrid: '80px 1fr',
       },
       screens: {
         c2: '160px',
