@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,9 +11,13 @@ import {
   validatePassword,
   validateEmail,
 } from '../../utils/validators';
+import formatErrorMsg from '../../utils/formatErrorMsg';
 
 function Signup() {
-  const navigate = useNavigate('/');
+  const navigate = useNavigate();
+
+  const [submitError, setSubmitError] = useState(null);
+
   const { width } = useViewport();
   const breakPoint = 720;
 
@@ -24,6 +28,7 @@ function Signup() {
     classesName: nameClassesName,
     valueChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
+    reset: nameReset,
   } = useInput('Username', 'Username is required', validateName);
 
   const {
@@ -33,6 +38,7 @@ function Signup() {
     classesName: emailClassesName,
     valueChangeHandler: emailChangeHandler,
     inputBlurHandler: emailBlurHandler,
+    reset: emailReset,
   } = useInput('Email', 'Required email format', validateEmail);
 
   const {
@@ -42,6 +48,7 @@ function Signup() {
     classesName: passwordClassesName,
     valueChangeHandler: passwordChangeHandler,
     inputBlurHandler: passwordBlurHandler,
+    reset: passwordReset,
   } = useInput(
     'Password',
     'A minimum of 6 characters (letters and numbers), and at least one number and a letter',
@@ -63,24 +70,29 @@ function Signup() {
       enteredEmailValue,
       enteredPasswordValue
     )
-      .then((userCredential) => {
-        console.log(userCredential);
-        const { user } = userCredential;
-        user.updateProfile({
-          displayName: enteredNameValue,
-        });
-        navigate('/signin');
+      .then(() => {
+        // get username ...
+        navigate('/home');
+        setSubmitError(null);
       })
       .catch((error) => {
+        // ...
+        // const errorCode = error.code;
+
         const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(error, errorCode, errorMessage);
+        setSubmitError(formatErrorMsg(errorCode));
       });
+
+    nameReset();
+    emailReset();
+    passwordReset();
   };
 
   return (
     <main className="flex flex-col ">
-      <span className="h-4 lg:h-16" />
+      <span className="h-6 lg:h-16">
+        <p className="mb-2 bg-red-500 text-center text-white">{submitError}</p>
+      </span>
       <div className="flex  mx-auto">
         {width > breakPoint ? (
           <div>
