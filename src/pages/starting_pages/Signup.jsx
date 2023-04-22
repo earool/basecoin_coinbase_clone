@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { auth } from '../../firebase';
+import GoBackButton from '../../components/starting/GoBackBtn';
 import useViewport from '../../hooks/useViewport';
 import useInput from '../../hooks/useInput';
-import GoBackButton from '../../components/starting/GoBackBtn';
+import { createUserDocument } from '../../store/userSlice';
 import {
   validateName,
   validatePassword,
@@ -15,6 +17,7 @@ import formatErrorMsg from '../../utils/formatErrorMsg';
 
 function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [submitError, setSubmitError] = useState(null);
 
@@ -70,15 +73,13 @@ function Signup() {
       enteredEmailValue,
       enteredPasswordValue
     )
-      .then(() => {
-        // get username ...
+      .then((userCredentials) => {
+        const { email, uid } = userCredentials.user;
+        dispatch(createUserDocument({ enteredNameValue, email, uid }));
         navigate('/home');
         setSubmitError(null);
       })
       .catch((error) => {
-        // ...
-        // const errorCode = error.code;
-
         const errorCode = error.code;
         setSubmitError(formatErrorMsg(errorCode));
       });

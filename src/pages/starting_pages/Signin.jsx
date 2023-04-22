@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   fetchSignInMethodsForEmail,
   signInWithEmailAndPassword,
@@ -8,11 +9,14 @@ import {
 import { ReactComponent as UserIcon } from '../../assets/icons/headerbar/user.svg';
 import { auth } from '../../firebase';
 import useInput from '../../hooks/useInput';
+import { getUserDocument } from '../../store/userSlice';
 import { validateEmail, validatePassword } from '../../utils/validators';
 import formatErrorMsg from '../../utils/formatErrorMsg';
 
 function Signin() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
@@ -65,7 +69,10 @@ function Signin() {
       enteredEmailValue,
       enteredPasswordValue
     )
-      .then(() => {
+      .then((userCredentials) => {
+        const { uid } = userCredentials.user;
+        dispatch(getUserDocument(uid));
+
         setSubmitError(null);
         navigate('/home');
       })
