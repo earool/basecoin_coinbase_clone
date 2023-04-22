@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import useViewport from '../../hooks/useViewport';
 import Header from '../../components/protected/Header';
 import NavBar from '../../components/protected/NavBar';
+import useViewport from '../../hooks/useViewport';
 
 function Root() {
   const navigate = useNavigate();

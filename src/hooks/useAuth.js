@@ -11,7 +11,6 @@ const useAuth = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
         dispatch(setLoginStatus(true));
       } else {
         dispatch(setLoginStatus(false));
