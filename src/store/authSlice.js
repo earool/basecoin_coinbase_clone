@@ -1,15 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
-// export const createUser(
-//   'auth/createUser',
-//   async () => {
-
-//   }
-// )
-
 const initialState = {
-  loginStatus: false,
+  // At first, the login status should be false,
+  // however, right after initialization,
+  // useAuth updates the status.
+  loginStatus: true,
 };
 
 const authSlice = createSlice({
