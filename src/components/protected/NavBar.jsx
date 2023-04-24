@@ -8,10 +8,10 @@ import { ReactComponent as Assets } from '../../assets/icons/navbar/assets.svg';
 import { ReactComponent as HomeIcon } from '../../assets/icons/navbar/homeIcon.svg';
 import { ReactComponent as Pay } from '../../assets/icons/navbar/pay.svg';
 import { ReactComponent as Trade } from '../../assets/icons/navbar/trade.svg';
+import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
 function NavBar() {
   const { width } = useViewport();
-  const breakpoint = 640;
 
   const navIcons = (
     <>
@@ -30,7 +30,7 @@ function NavBar() {
     </>
   );
 
-  return width < breakpoint ? (
+  return width < MAX_MOBILE_WIDTH ? (
     <>
       <nav className=" flex justify-between items-center my-2 mx-4">
         <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-6" />
