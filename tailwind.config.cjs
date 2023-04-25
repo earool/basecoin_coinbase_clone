@@ -12,6 +12,7 @@ module.exports = {
         'gray-light-hover': '#E2E5EC',
         'gray-border': '#ECEFF1',
         'gray-border-darker': '#5B616EAB',
+        'gray-bg-modal': '#1A3650',
       },
       gridTemplateColumns: {
         lgGrid: '200px 1fr',
@@ -22,7 +23,7 @@ module.exports = {
         c3: '240px',
         c4: '340px',
         c5: '440px',
-        sm: '640px',
+        sm: '680px',
         md: '768px',
         lg: '1024px',
         xl: '1280px',
