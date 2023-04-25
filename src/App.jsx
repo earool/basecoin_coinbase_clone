@@ -5,7 +5,7 @@ import Start from './pages/starting_pages/Start';
 import Signup from './pages/starting_pages/Signup';
 import Signin from './pages/starting_pages/Signin';
 import Root from './pages/protected_pages/Root';
-import Home from './pages/protected_pages/Home';
+import HomePage from './pages/protected_pages/HomePage';
 import useAuth from './hooks/useAuth';
 
 const router = createBrowserRouter([
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'home',
-        element: <Home />,
+        element: <HomePage />,
       },
     ],
   },
