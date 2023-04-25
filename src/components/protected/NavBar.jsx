@@ -10,7 +10,7 @@ import { ReactComponent as Pay } from '../../assets/icons/navbar/pay.svg';
 import { ReactComponent as Trade } from '../../assets/icons/navbar/trade.svg';
 import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
-function NavBar() {
+function NavBar({ onShowUserMenu }) {
   const { width } = useViewport();
 
   const navIcons = (
@@ -34,7 +34,7 @@ function NavBar() {
     <>
       <nav className=" flex justify-between items-center my-2 mx-4">
         <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-6" />
-        <Hamburger className="w-6 cursor-pointer" />
+        <Hamburger onClick={onShowUserMenu} className="w-6 cursor-pointer" />
       </nav>
       <nav className="row-start-3 row-end-4 flex justify-around">
         {navIcons}
