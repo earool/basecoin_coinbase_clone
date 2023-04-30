@@ -36,12 +36,12 @@ function NavBar({ onShowUserMenu }) {
         <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-6" />
         <Hamburger onClick={onShowUserMenu} className="w-6 cursor-pointer" />
       </nav>
-      <nav className="row-start-3 row-end-4 flex justify-around">
+      <nav className="border-t-2 border-gray-light fixed left-0 bottom-0 w-full flex justify-around">
         {navIcons}
       </nav>
     </>
   ) : (
-    <nav className="flex flex-col sm:border-x-2 sm:border-gray-light col-start-1 col-end-2 row-start-1 row-end-3">
+    <nav className="h-screen flex flex-col border-x-2 border-gray-light col-start-1 col-end-2 row-start-1 row-end-3">
       <div className="mt-5 mb-3 ">
         <div className="mx-auto w-[40px] lg:w-[136px]">
           <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-9" />

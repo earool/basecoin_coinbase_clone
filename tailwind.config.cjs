@@ -18,6 +18,10 @@ module.exports = {
         lgGrid: '200px 1fr',
         smGrid: '80px 1fr',
       },
+      gridTemplateRows: {
+        smGridHdr: '64px 1fr',
+        smGridHome: '120px 1fr',
+      },
       screens: {
         c2: '160px',
         c3: '240px',

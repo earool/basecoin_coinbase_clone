@@ -38,7 +38,7 @@ function Root() {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-smGrid lg:grid-cols-lgGrid">
+    <div className="grid grid-cols-1 sm:grid-rows-smGridHdr sm:grid-cols-smGrid lg:grid-cols-lgGrid">
       {userMenuIsShown && <UserMenu onClose={hideUserMenu} />}
       <NavBar onShowUserMenu={showUserMenu} />
       <Outlet />
