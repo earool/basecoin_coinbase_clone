@@ -9,8 +9,8 @@ const initialState = {
   email: null,
   username: null,
   balance: 0,
-  watchlist: [],
-  transactions: [],
+  watchlist: null,
+  transactions: null,
 };
 
 export const createUserDocument = createAsyncThunk(
