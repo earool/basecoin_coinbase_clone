@@ -5,7 +5,7 @@ import { ReactComponent as RightCaret } from '../../../assets/icons/others/right
 import MobileTransactionMenu from './MobileTransactionMenu';
 import HomeTable from './HomeTable';
 
-function HomeMain({ data }) {
+function HomeMain() {
   const balance = 0;
   const balanceString = balance.toFixed(2);
 
@@ -23,9 +23,7 @@ function HomeMain({ data }) {
         </div>
         <MobileTransactionMenu />
       </section>
-      <section className="max-w-[960px] min-w-[400px]">
-        <HomeTable data={data} />
-      </section>
+      <HomeTable />
     </main>
   );
 }
