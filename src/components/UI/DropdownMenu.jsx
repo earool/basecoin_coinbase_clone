@@ -5,24 +5,23 @@ import React, { useState } from 'react';
 import { ReactComponent as DownCavet } from '../../assets/icons/others/down_cavet.svg';
 import { ReactComponent as DoneIcon } from '../../assets/icons/others/done.svg';
 
-function DropdownMenu({ myStyle }) {
+function DropdownMenu({ myStyle, onOptionChange, parentOption }) {
   const ifHome = myStyle === 'home';
 
   const [dropdownMenuState, setDropdownMenuState] = useState({
     showMenu: false,
-    option: ifHome ? 'Watchlist' : 'All assets',
+    option: parentOption,
   });
 
   const toggleDropdownMenuHandler = (e) => {
     e.stopPropagation();
-    console.log('toogle');
     setDropdownMenuState((prevs) => ({ ...prevs, showMenu: !prevs.showMenu }));
   };
 
   const setDropdownOptionHandler = (e) => {
-    console.log(e.target.dataset.option);
     const optionData = e.target.dataset.option;
     setDropdownMenuState((prevs) => ({ ...prevs, option: optionData }));
+    onOptionChange(optionData);
   };
 
   const menuOptions = ifHome
@@ -32,7 +31,7 @@ function DropdownMenu({ myStyle }) {
   const classNames = ifHome
     ? {
         toggleButton:
-          'flex relative px-3 py-0.5 w-[128px] bg-gray-light hover:bg-gray-light-hover justify-between items-center rounded-3xl',
+          'flex relative px-3 w-[128px] bg-gray-light hover:bg-gray-light-hover justify-between items-center rounded-3xl',
         downCavet: 'w-5',
         ul: 'absolute -bottom-[120px] left-0 z-20 w-[140px] bg-white text-start border border-gray-300 rounded-2xl',
         li: 'py-1.5 pl-3 [&>svg]:hidden hover:bg-gray-100 border border-transparent first:rounded-t-2xl last:rounded-b-2xl',
