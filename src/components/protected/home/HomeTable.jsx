@@ -96,7 +96,7 @@ function HomeTable() {
             </button>
           </div>
         </div>
-        <table className="w-full overflow-x-auto">
+        <table className="w-full">
           <tbody>
             {slicedData.map((item) => {
               const { price } = item.sparkline_in_7d;
@@ -189,7 +189,7 @@ function HomeTable() {
     content = <p>{error.toString()}</p>;
   }
 
-  return <section className="max-w-[960px] min-w-[400px]">{content}</section>;
+  return <section className="">{content}</section>;
 }
 
 export default HomeTable;

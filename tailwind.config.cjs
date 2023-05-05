@@ -17,6 +17,7 @@ module.exports = {
       gridTemplateColumns: {
         lgGrid: '200px 1fr',
         smGrid: '80px 1fr',
+        lgGridHome: 'min(800px, 960px) 360px',
       },
       gridTemplateRows: {
         smGridHdr: '64px 1fr',
