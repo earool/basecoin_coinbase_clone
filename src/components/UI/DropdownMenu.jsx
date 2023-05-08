@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 
 import { ReactComponent as DownCavet } from '../../assets/icons/others/down_cavet.svg';
 import { ReactComponent as DoneIcon } from '../../assets/icons/others/done.svg';
+import { TRADE_OPTIONS } from '../../utils/constants';
 
-function DropdownMenu({ myStyle, onOptionChange, parentOption }) {
-  const ifHome = myStyle === 'home';
+function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
+  const ifHome = dropdownType === 'home';
 
   const [dropdownMenuState, setDropdownMenuState] = useState({
     showMenu: false,
@@ -24,29 +25,41 @@ function DropdownMenu({ myStyle, onOptionChange, parentOption }) {
     onOptionChange(optionData);
   };
 
-  const menuOptions = ifHome
-    ? ['Watchlist', 'Top assets', 'Trending']
-    : ['All assets', 'Watchlist', 'Top gainers', 'Top losers'];
+  const menuOptions = {
+    home: ['Watchlist', 'Top assets', 'Trending'],
+    trade: TRADE_OPTIONS,
+    tradeTime: ['1H', '1D', '1W', '1M', '1Y'],
+  };
 
-  const classNames = ifHome
-    ? {
-        toggleButton:
-          'flex relative px-3 w-[128px] bg-gray-light hover:bg-gray-light-hover justify-between items-center rounded-3xl',
-        downCavet: 'w-5',
-        ul: 'absolute -bottom-[120px] left-0 z-20 w-[140px] bg-white text-start border border-gray-300 rounded-2xl',
-        li: 'py-1.5 pl-3 [&>svg]:hidden hover:bg-gray-100 border border-transparent first:rounded-t-2xl last:rounded-b-2xl',
-        activeLi:
-          'py-1.5 pl-3 pr-1.5 flex justify-between bg-gray-light border border-transparent first:rounded-t-2xl last:rounded-b-2xl',
-      }
-    : {
-        toggleButton:
-          'flex relative pl-2 pr-1 py-2 w-[130px] text-sm font-medium hover:bg-gray-light-hover border-2 border-gray-300 rounded-md justify-between items-center',
-        downCavet: 'w-5 text-gray-400',
-        ul: 'ml-[-2px] absolute -bottom-[148px] w-[130px] left-0 z-20 bg-white text-start border-2 border-gray-300 rounded-md',
-        li: 'py-1.5 pl-2 hover:bg-gray-100 border border-transparent first:rounded-t-md last:rounded-b-md',
-        activeLi:
-          'py-1.5 pl-2 bg-gray-light-hover border border-transparent first:rounded-t-md last:rounded-b-md',
-      };
+  const classNames = {
+    home: {
+      toggleButton:
+        'flex relative px-3 w-[128px] bg-gray-light hover:bg-gray-light-hover justify-between items-center rounded-3xl',
+      downCavet: 'w-5',
+      ul: 'absolute -bottom-[120px] left-0 z-20 w-[140px] bg-white text-start border border-gray-300 rounded-2xl',
+      li: 'py-1.5 pl-3 [&>svg]:hidden hover:bg-gray-100 border border-transparent first:rounded-t-2xl last:rounded-b-2xl',
+      activeLi:
+        'py-1.5 pl-3 pr-1.5 flex justify-between bg-gray-light border border-transparent first:rounded-t-2xl last:rounded-b-2xl',
+    },
+    trade: {
+      toggleButton:
+        'flex relative pl-2 pr-1 h-dropdown-trade w-[130px] text-sm font-medium hover:bg-gray-light-hover border-2 border-gray-border rounded-md justify-between items-center',
+      downCavet: 'w-4 text-gray-400',
+      ul: 'ml-[-2px] absolute -bottom-[148px] w-[130px] left-0 z-20 bg-white text-start border-2 border-gray-border rounded-lg',
+      li: 'py-1.5 pl-2 hover:bg-gray-100 border border-transparent first:rounded-t-md last:rounded-b-md',
+      activeLi:
+        'py-1.5 pl-2 bg-gray-light-hover border border-transparent first:rounded-t-md last:rounded-b-md',
+    },
+    tradeTime: {
+      toggleButton:
+        'flex relative pl-2 pr-1 h-dropdown-trade w-[58px] text-sm font-medium hover:bg-gray-light-hover border-2 border-gray-border rounded-md justify-between items-center',
+      downCavet: 'w-4 text-gray-400',
+      ul: 'ml-[-2px] absolute -bottom-[180px] w-[58px] left-0 z-20 bg-white text-start border-2 border-gray-border rounded-lg',
+      li: 'py-1.5 pl-2 hover:bg-gray-100 border border-transparent first:rounded-t-md last:rounded-b-md',
+      activeLi:
+        'py-1.5 pl-2 bg-gray-light-hover border border-transparent first:rounded-t-md last:rounded-b-md',
+    },
+  };
 
   const extendedMenu = (
     <>
@@ -57,16 +70,16 @@ function DropdownMenu({ myStyle, onOptionChange, parentOption }) {
         tabIndex="0"
         aria-label="close"
       />
-      <ul className={classNames.ul}>
-        {menuOptions.map((option) => (
+      <ul className={classNames[dropdownType].ul}>
+        {menuOptions[dropdownType].map((option) => (
           <li
             onClick={setDropdownOptionHandler}
             key={option}
             data-option={option}
             className={
               dropdownMenuState.option === option
-                ? classNames.activeLi
-                : classNames.li
+                ? classNames[dropdownType].activeLi
+                : classNames[dropdownType].li
             }
           >
             {option}
@@ -81,10 +94,10 @@ function DropdownMenu({ myStyle, onOptionChange, parentOption }) {
     <button
       type="button"
       onClick={toggleDropdownMenuHandler}
-      className={classNames.toggleButton}
+      className={classNames[dropdownType].toggleButton}
     >
       <p>{dropdownMenuState.option}</p>
-      <DownCavet className={classNames.downCavet} />
+      <DownCavet className={classNames[dropdownType].downCavet} />
       {dropdownMenuState.showMenu && extendedMenu}
     </button>
   );

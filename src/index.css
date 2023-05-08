@@ -26,6 +26,9 @@
     @apply w-full h-[2.75rem] py-2 mt-2 border bg-red-100 border-red-600 rounded-md p-2 focus:outline-none focus:border-2;
   }
 
+  .h-dropdown-trade {
+    @apply h-[48px];
+  }
 }
 
 @tailwind utilities;
