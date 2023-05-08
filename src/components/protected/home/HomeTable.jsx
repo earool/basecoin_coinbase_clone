@@ -83,7 +83,7 @@ function HomeTable() {
           <h3 className="text-xl font-medium">Prices</h3>
           <div className="flex">
             <DropdownMenu
-              myStyle="home"
+              dropdownType="home"
               parentOption={option}
               onOptionChange={optionChangeHandler}
             />
