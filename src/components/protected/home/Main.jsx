@@ -11,7 +11,7 @@ function HomeMain() {
   const balanceString = balance.toFixed(2);
 
   return (
-    <main className="grid lg:ml-[calc((10vw-102.5px))] sm:grid-rows-smGridHome lg:grid-cols-lgGridHome border-y-2 border-gray-light sm:border-y-0">
+    <main className="grid lg:ml-[calc((10vw-102.5px))] sm:grid-rows-smGridHome lg:grid-cols-lgGridHome border-gray-light sm:border-y-0">
       <section className="border-b-2 border-gray-light">
         <div className="mt-4 ml-5">
           <h6 className="text-sm text-gray-500">My balance</h6>

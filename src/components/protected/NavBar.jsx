@@ -32,7 +32,7 @@ function NavBar({ onShowUserMenu }) {
 
   return width < MAX_MOBILE_WIDTH ? (
     <>
-      <nav className=" flex justify-between items-center my-2 mx-4">
+      <nav className=" flex justify-between items-center py-2 px-4 border-b-2 border-gray-light">
         <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-6" />
         <Hamburger onClick={onShowUserMenu} className="w-6 cursor-pointer" />
       </nav>
