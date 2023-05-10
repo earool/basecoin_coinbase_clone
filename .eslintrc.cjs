@@ -17,5 +17,6 @@ module.exports = {
   plugins: ['react', 'prettier'],
   rules: {
     'react/prop-types': 'off',
+    'click-events-have-key-events': 'off',
   },
 };

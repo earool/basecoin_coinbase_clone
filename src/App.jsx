@@ -6,6 +6,7 @@ import Signup from './pages/starting_pages/Signup';
 import Signin from './pages/starting_pages/Signin';
 import Root from './pages/protected_pages/Root';
 import HomePage from './pages/protected_pages/HomePage';
+import TradePage from './pages/protected_pages/TradePage';
 import useAuth from './hooks/useAuth';
 
 const router = createBrowserRouter([
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
         path: 'home',
         element: <HomePage />,
       },
+      { path: 'trade', element: <TradePage /> },
     ],
   },
 ]);

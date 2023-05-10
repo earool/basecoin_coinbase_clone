@@ -13,6 +13,7 @@ module.exports = {
         'gray-border': '#ECEFF1',
         'gray-border-darker': '#5B616EAB',
         'gray-bg-modal': '#1A3650',
+        'gray-bg-main': '#003ec108',
       },
       gridTemplateColumns: {
         lgGrid: '200px 1fr',
@@ -28,6 +29,7 @@ module.exports = {
         c3: '240px',
         c4: '340px',
         c5: '440px',
+        c6: '560px',
         sm: '680px',
         md: '768px',
         lg: '1024px',
