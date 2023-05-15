@@ -9,19 +9,15 @@ import { TRADE_OPTIONS } from '../../utils/constants';
 function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
   const ifHome = dropdownType === 'home';
 
-  const [dropdownMenuState, setDropdownMenuState] = useState({
-    showMenu: false,
-    option: parentOption,
-  });
+  const [showMenu, setShowMenu] = useState(false);
 
   const toggleDropdownMenuHandler = (e) => {
     e.stopPropagation();
-    setDropdownMenuState((prevs) => ({ ...prevs, showMenu: !prevs.showMenu }));
+    setShowMenu((prevs) => !prevs);
   };
 
   const setDropdownOptionHandler = (e) => {
     const optionData = e.target.dataset.option;
-    setDropdownMenuState((prevs) => ({ ...prevs, option: optionData }));
     onOptionChange(optionData);
   };
 
@@ -77,7 +73,7 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
             key={option}
             data-option={option}
             className={
-              dropdownMenuState.option === option
+              parentOption === option
                 ? classNames[dropdownType].activeLi
                 : classNames[dropdownType].li
             }
@@ -96,9 +92,9 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
       onClick={toggleDropdownMenuHandler}
       className={classNames[dropdownType].toggleButton}
     >
-      <p>{dropdownMenuState.option}</p>
+      <p>{parentOption}</p>
       <DownCavet className={classNames[dropdownType].downCavet} />
-      {dropdownMenuState.showMenu && extendedMenu}
+      {showMenu && extendedMenu}
     </button>
   );
 }
