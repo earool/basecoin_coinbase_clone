@@ -2,11 +2,12 @@ import React, { useState, useMemo } from 'react';
 
 import LogoAndName from '../table_components/LogoAndName';
 import { PercentageChangePara } from '../table_components/procentChangeAndPrice';
-import { useGetHomeDataQuery } from '../../../store/apiSlice';
+import { useGetDataQuery } from '../../../store/apiSlice';
 
 function TopMovers() {
-  const { data = [], isSuccess } = useGetHomeDataQuery({
+  const { data = [], isSuccess } = useGetDataQuery({
     option: 'Top movers',
+    ifChart: false,
   });
   const [seeAllItems, setSeeAllItems] = useState(false);
 
