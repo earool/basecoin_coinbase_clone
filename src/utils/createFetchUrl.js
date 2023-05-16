@@ -1,3 +1,6 @@
+const priceChangePercentage =
+  'price_change_percentage=1h%2C%2024h%2C7d%2C30d%2C1y';
+
 export default function createFetchUrl({
   option,
   ifChart,
@@ -8,7 +11,7 @@ export default function createFetchUrl({
 }) {
   if (option === 'Watchlist') {
     const string = coinsIds.join('%2C');
-    return `/coins/markets?vs_currency=usd&ids=${string}&order=market_cap_desc&page=1&sparkline=${ifChart}&price_change_percentage=1h%2C%2024h%2C%207d%2C30d%2C1y&locale=en`;
+    return `/coins/markets?vs_currency=usd&ids=${string}&order=market_cap_desc&page=1&sparkline=${ifChart}&${priceChangePercentage}&locale=en`;
   }
 
   if (option === 'Top assets') {
@@ -24,7 +27,7 @@ export default function createFetchUrl({
   }
 
   if (option === 'All assets') {
-    return `/coins/markets?vs_currency=usd&order=${allAssetsParam}&per_page=${perPage}&page=${pageNumber}&sparkline=${ifChart}&price_change_percentage=1h%2C%2024h%2C%207d%2C30d%2C1y&locale=en`;
+    return `/coins/markets?vs_currency=usd&order=${allAssetsParam}&per_page=${perPage}&page=${pageNumber}&sparkline=${ifChart}&${priceChangePercentage}&locale=en`;
   }
 
   return null;
