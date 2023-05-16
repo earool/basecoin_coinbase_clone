@@ -14,6 +14,7 @@ module.exports = {
         'gray-border-darker': '#5B616EAB',
         'gray-bg-modal': '#1A3650',
         'gray-bg-main': '#003ec108',
+        'gray-placeholder': '#e2e8f0',
       },
       gridTemplateColumns: {
         lgGrid: '200px 1fr',
