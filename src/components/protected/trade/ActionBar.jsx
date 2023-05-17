@@ -4,11 +4,12 @@ import DropdownMenu from '../../UI/DropdownMenu';
 import { ReactComponent as SearchIcon } from '../../../assets/icons/others/magnifying_glass.svg';
 import { TRADE_OPTIONS } from '../../../utils/constants';
 
-function ActionBar() {
-  const optionChangeHanlder = () => {};
-
-  // const activeOptionClass = 'bg-blue-50 rounded-2xl text-my-blue';
-
+function ActionBar({
+  onOptionChange,
+  onTimeChange,
+  optionDropdown,
+  timeDropdown,
+}) {
   return (
     <div className="p-3">
       <div className="flex items-center justify-between">
@@ -26,15 +27,15 @@ function ActionBar() {
           <div className="mx-2">
             <DropdownMenu
               dropdownType="tradeTime"
-              onOptionChange={optionChangeHanlder}
-              parentOption="1D"
+              onOptionChange={onTimeChange}
+              parentOption={timeDropdown}
             />
           </div>
           <div className="hidden c6:flex">
             <DropdownMenu
               dropdownType="trade"
-              onOptionChange={optionChangeHanlder}
-              parentOption="All assets"
+              onOptionChange={onOptionChange}
+              parentOption={optionDropdown}
             />
           </div>
         </div>

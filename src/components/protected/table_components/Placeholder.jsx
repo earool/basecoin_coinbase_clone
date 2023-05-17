@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Placeholder({ ifBigger }) {
+function Placeholder({ ifBigger = true }) {
   return (
     <div
       className={
