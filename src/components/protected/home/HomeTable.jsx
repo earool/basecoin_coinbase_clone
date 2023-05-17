@@ -19,7 +19,7 @@ import MarketCapPara from '../table_components/MarketCapPara';
 import Spinner from '../../UI/Spinner';
 import { ReactComponent as Star } from '../../../assets/icons/others/star.svg';
 import useViewport from '../../../hooks/useViewport';
-import { useGetHomeDataQuery } from '../../../store/apiSlice';
+import { useGetDataQuery } from '../../../store/apiSlice';
 import getEvery10thElement from '../../../utils/get10thElement';
 import { MAX_MOBILE_WIDTH } from '../../../utils/constants';
 
@@ -57,26 +57,22 @@ function HomeTable() {
     setSeeAllItems((prevs) => !prevs);
   };
 
-  const { data, isLoading, isSuccess, isError, error } = useGetHomeDataQuery(
-    { watchlistIds, option },
+  const { data, isLoading, isSuccess, isError, error } = useGetDataQuery(
+    { watchlistIds, option, ifChart: true },
     { skip }
   );
 
   const slicedData = seeAllItems || data?.length < 6 ? data : data?.slice(0, 5);
 
-  console.log(data);
-
   let content;
 
   if (isLoading || watchlistIds === null) {
-    console.log('loggin');
     content = (
       <div className="w-full h-full flex justify-center items-center">
         <Spinner />
       </div>
     );
   } else if (isSuccess) {
-    console.log('succeed');
     content = (
       <>
         <div className="m-3 ml-5 sm:mr-4 flex items-center justify-between font-medium">
