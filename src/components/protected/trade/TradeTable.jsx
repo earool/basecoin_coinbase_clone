@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import Table from '../table_components/Table';
 import ActionBar from './ActionBar';
+import HeaderRow from './HeaderRow';
 import LogoAndName, {
   LogoAndNamePlaceholder,
 } from '../table_components/LogoAndName';
@@ -26,26 +27,103 @@ const timeBasedChange = {
 function TradeTable() {
   const [optionDropdown, setOptionDropdown] = useState('All assets');
   const [timeDropdown, setTimeDropdown] = useState('1D');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allAssetsItems, setAllAssetsItems] = useState([]);
+  const [sortCriteria, setSortCriteria] = useState('market_cap');
+  const [sortDirection, setSortDirection] = useState('desc');
 
-  const { data, isLoading, isSuccess, isError, error } = useGetDataQuery({
-    option: optionDropdown,
-    ifCharts: false,
-  });
+  const isAllAssets = optionDropdown === 'All assets';
+  const optionLogic =
+    optionDropdown === 'Top gainers' || optionDropdown === 'Top losers'
+      ? 'Top movers'
+      : optionDropdown;
 
-  const headerRow = (
-    <tr>
-      <th>Name</th>
-      <th>Price</th>
-      <th>Change</th>
-      <th>Market cap</th>
-      <th aria-label="buy column" />
-      <th>
-        <p className="text-center">Watch</p>
-      </th>
-    </tr>
+  const allAssetsResult = useGetDataQuery(
+    {
+      option: 'All assets',
+      ifCharts: false,
+      allAssetsParam: `${sortCriteria}_${sortDirection}`,
+      pageNumber: currentPage,
+    },
+    { skip: !isAllAssets }
   );
 
-  const dataRows = data?.map((item) => (
+  const specificAssetsResult = useGetDataQuery(
+    {
+      option: optionLogic,
+      ifCharts: false,
+    },
+    { skip: isAllAssets }
+  );
+
+  const {
+    data = [],
+    isLoading,
+    isSuccess,
+    isFetching,
+    isError,
+    error,
+  } = isAllAssets ? allAssetsResult : specificAssetsResult;
+
+  useEffect(() => {
+    setAllAssetsItems([]);
+  }, [sortCriteria, sortDirection]);
+
+  useEffect(() => {
+    if (isAllAssets && !isFetching && data) {
+      setAllAssetsItems((prevs) => [...prevs, ...data]);
+    }
+  }, [isAllAssets, isFetching, data]);
+
+  const handleSort = (criteria) => {
+    if (criteria === sortCriteria) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortCriteria(criteria);
+      setSortDirection('desc');
+    }
+  };
+
+  const sortedSpecificAssetsItems = useMemo(() => {
+    if (isAllAssets) {
+      return [];
+    }
+
+    const sortingCriteria = {
+      price: 'current_price',
+      change: timeBasedChange[timeDropdown],
+      market_cap: 'market_cup',
+    };
+
+    const sortedData = data.slice();
+    if (sortCriteria === 'id') {
+      sortedData.sort((a, b) => b.id.localeCompare(a.id));
+    } else {
+      sortedData.sort(
+        (a, b) =>
+          b[sortingCriteria[sortCriteria]] - a[sortingCriteria[sortCriteria]]
+      );
+    }
+
+    if (sortDirection === 'asc') {
+      sortedData.reverse();
+    }
+
+    return sortedData;
+  }, [data, sortCriteria, timeDropdown, sortDirection, isAllAssets]);
+
+  const items = isAllAssets ? allAssetsItems : sortedSpecificAssetsItems;
+
+  const headerRow = (
+    <HeaderRow
+      sortCriteria={sortCriteria}
+      sortDirection={sortDirection}
+      handleSort={handleSort}
+      isAllAssets={isAllAssets}
+    />
+  );
+
+  const dataRows = items.map((item) => (
     <tr key={item.id}>
       <td>
         <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
@@ -100,7 +178,26 @@ function TradeTable() {
     </tr>
   ));
 
+  const placeholderFetchingRows = placeholderRows.slice(0, 2);
+
+  const errorPara = <p>{JSON.stringify(error)}</p>;
+
   const optionChangeHandler = (option) => {
+    if (option === 'Top gainers') {
+      setSortDirection('desc');
+      setSortCriteria('change');
+    }
+
+    if (option === 'Top losers') {
+      setSortCriteria('change');
+      setSortDirection('asc');
+    }
+
+    if (option === 'All assets') {
+      setSortCriteria('market_cap');
+      setSortDirection('desc');
+    }
+
     setOptionDropdown(option);
   };
 
@@ -108,21 +205,34 @@ function TradeTable() {
     setTimeDropdown(option);
   };
 
+  const addItem = () => {
+    setCurrentPage((prevs) => prevs + 1);
+  };
+
   return (
-    <Table
-      headerRow={headerRow}
-      dataRows={dataRows}
-      placeholderRows={placeholderRows}
-      isLoading={isLoading}
-      isSuccess={isSuccess}
-    >
-      <ActionBar
-        onOptionChange={optionChangeHandler}
-        onTimeChange={timeChangeHandler}
-        optionDropdown={optionDropdown}
-        timeDropdown={timeDropdown}
-      />
-    </Table>
+    <>
+      <Table
+        headerRow={headerRow}
+        dataRows={dataRows}
+        placeholderRows={placeholderRows}
+        placeholderFetchingRows={placeholderFetchingRows}
+        errorPara={errorPara}
+        isLoading={isLoading}
+        isSuccess={isSuccess}
+        isFetching={isFetching}
+        isError={isError}
+      >
+        <ActionBar
+          onOptionChange={optionChangeHandler}
+          onTimeChange={timeChangeHandler}
+          optionDropdown={optionDropdown}
+          timeDropdown={timeDropdown}
+        />
+      </Table>
+      <button type="button" onClick={addItem}>
+        addItems!
+      </button>
+    </>
   );
 }
 
