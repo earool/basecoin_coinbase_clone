@@ -5,17 +5,21 @@ function Table({
   headerRow,
   dataRows,
   placeholderRows,
+  placeholderFetchingRows,
+  errorPara,
   isLoading,
   isSuccess,
+  isFetching,
+  isError,
 }) {
   let content;
 
   if (isLoading) {
     content = placeholderRows;
-  }
-
-  if (isSuccess) {
+  } else if (isSuccess) {
     content = dataRows;
+  } else if (isError) {
+    content = errorPara;
   }
 
   return (
@@ -29,7 +33,10 @@ function Table({
         <thead className="hidden sm:table-header-group border-y-2 border-gray-border">
           {headerRow}
         </thead>
-        <tbody>{content}</tbody>
+        <tbody>
+          {content}
+          {isFetching && placeholderFetchingRows}
+        </tbody>
       </table>
     </div>
   );
