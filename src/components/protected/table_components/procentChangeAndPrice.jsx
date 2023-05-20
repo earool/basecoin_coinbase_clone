@@ -13,13 +13,13 @@ export function PercentageChangePara({ precentChangeValue: v }) {
   return (
     <p className={v > 0 ? 'text-green-600' : ' text-red-500'}>
       {v > 0 ? '➚  ' : '➘ '}
-      {v.toFixed(2)}%
+      {v?.toFixed(2)}%
     </p>
   );
 }
 
 export function CurrentPricePara({ currentPrice }) {
-  return <p>USD {currentPrice.toLocaleString()}</p>;
+  return <p>USD {currentPrice?.toLocaleString()}</p>;
 }
 
 export default MobilePriceAndPercChangeTd;
