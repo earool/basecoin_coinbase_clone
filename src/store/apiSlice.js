@@ -7,8 +7,20 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://api.coingecko.com/api/v3' }),
   endpoints: (builder) => ({
     getData: builder.query({
-      query: ({ watchlistIds: coinsIds, option, ifChart }) =>
-        createFetchUrl({ option, ifChart, coinsIds }),
+      query: ({
+        watchlistIds: coinsIds,
+        option,
+        ifChart,
+        pageNumber,
+        allAssetsParam,
+      }) =>
+        createFetchUrl({
+          option,
+          ifChart,
+          coinsIds,
+          pageNumber,
+          allAssetsParam,
+        }),
     }),
     searchCoins: builder.query({
       query: (searchQuery) => `search?query=${searchQuery}`,

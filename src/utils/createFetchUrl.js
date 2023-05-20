@@ -3,7 +3,7 @@ const priceChangePercentage =
 
 export default function createFetchUrl({
   option,
-  ifChart,
+  ifChart = false,
   perPage = 20,
   pageNumber = 1,
   allAssetsParam = 'market_cap_desc',
@@ -15,7 +15,7 @@ export default function createFetchUrl({
   }
 
   if (option === 'Top assets') {
-    return `/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=${ifChart}&price_change_percentage=24h&locale=en`;
+    return `/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=60&page=1&sparkline=${ifChart}&price_change_percentage=24h&locale=en`;
   }
 
   if (option === 'Trending') {
@@ -23,7 +23,7 @@ export default function createFetchUrl({
   }
 
   if (option === 'Top movers') {
-    return `/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=${ifChart}&price_change_percentage=1h%2C%2024h%2C%207d%2C30d%2C1&locale=en`;
+    return `/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=${ifChart}&${priceChangePercentage}&locale=en`;
   }
 
   if (option === 'All assets') {
