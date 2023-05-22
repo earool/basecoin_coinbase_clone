@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import Table from '../table_components/Table';
 import ActionBar from './ActionBar';
@@ -14,7 +15,10 @@ import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Placeholder from '../table_components/Placeholder';
 import Button from '../../UI/Button';
-import { useGetDataQuery } from '../../../store/apiSlice';
+import {
+  useGetAllAssetsQuery,
+  useGetWatchlistAssetsQuery,
+} from '../../../store/apiSlice';
 
 const timeBasedChange = {
   '1D': 'price_change_percentage_24h',
@@ -28,33 +32,13 @@ function TradeTable() {
   const [optionDropdown, setOptionDropdown] = useState('All assets');
   const [timeDropdown, setTimeDropdown] = useState('1D');
   const [currentPage, setCurrentPage] = useState(1);
-  const [allAssetsItems, setAllAssetsItems] = useState([]);
   const [sortCriteria, setSortCriteria] = useState('market_cap');
   const [sortDirection, setSortDirection] = useState('desc');
 
-  const isAllAssets = optionDropdown === 'All assets';
-  const optionLogic =
-    optionDropdown === 'Top gainers' || optionDropdown === 'Top losers'
-      ? 'Top movers'
-      : optionDropdown;
+  const watchlistIds = useSelector((state) => state.user.watchlist);
 
-  const allAssetsResult = useGetDataQuery(
-    {
-      option: 'All assets',
-      ifCharts: false,
-      allAssetsParam: `${sortCriteria}_${sortDirection}`,
-      pageNumber: currentPage,
-    },
-    { skip: !isAllAssets }
-  );
-
-  const specificAssetsResult = useGetDataQuery(
-    {
-      option: optionLogic,
-      ifCharts: false,
-    },
-    { skip: isAllAssets }
-  );
+  const specificAssetsResult = useGetAllAssetsQuery();
+  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds);
 
   const {
     data = [],
@@ -63,67 +47,45 @@ function TradeTable() {
     isFetching,
     isError,
     error,
-  } = isAllAssets ? allAssetsResult : specificAssetsResult;
-
-  useEffect(() => {
-    setAllAssetsItems([]);
-  }, [sortCriteria, sortDirection]);
-
-  useEffect(() => {
-    if (isAllAssets && !isFetching && data) {
-      setAllAssetsItems((prevs) => [...prevs, ...data]);
-    }
-  }, [isAllAssets, isFetching, data]);
+  } = optionDropdown === 'Watchlist'
+    ? watchlistAssetsResult
+    : specificAssetsResult;
 
   const handleSort = (criteria) => {
     if (criteria === sortCriteria) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortCriteria(criteria);
-      setSortDirection('desc');
     }
   };
 
-  const sortedSpecificAssetsItems = useMemo(() => {
-    if (isAllAssets) {
-      return [];
-    }
-
+  const sortedData = useMemo(() => {
     const sortingCriteria = {
       price: 'current_price',
       change: timeBasedChange[timeDropdown],
       market_cap: 'market_cup',
     };
 
-    const sortedData = data.slice();
+    const arr = data.slice();
     if (sortCriteria === 'id') {
-      sortedData.sort((a, b) => b.id.localeCompare(a.id));
+      arr.sort((a, b) => b.id.localeCompare(a.id));
     } else {
-      sortedData.sort(
+      arr.sort(
         (a, b) =>
           b[sortingCriteria[sortCriteria]] - a[sortingCriteria[sortCriteria]]
       );
     }
 
     if (sortDirection === 'asc') {
-      sortedData.reverse();
+      arr.reverse();
     }
 
-    return sortedData;
-  }, [data, sortCriteria, timeDropdown, sortDirection, isAllAssets]);
+    return arr;
+  }, [data, sortCriteria, timeDropdown, sortDirection]);
 
-  const items = isAllAssets ? allAssetsItems : sortedSpecificAssetsItems;
+  const slicedData = sortedData.slice(0, 10 * currentPage);
 
-  const headerRow = (
-    <HeaderRow
-      sortCriteria={sortCriteria}
-      sortDirection={sortDirection}
-      handleSort={handleSort}
-      isAllAssets={isAllAssets}
-    />
-  );
-
-  const dataRows = items.map((item) => (
+  const dataRows = slicedData.map((item) => (
     <tr key={item.id}>
       <td>
         <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
@@ -154,6 +116,14 @@ function TradeTable() {
       </td>
     </tr>
   ));
+
+  const headerRow = (
+    <HeaderRow
+      sortCriteria={sortCriteria}
+      sortDirection={sortDirection}
+      handleSort={handleSort}
+    />
+  );
 
   const placeholderRows = Array.from({ length: 10 }, (_, i) => (
     <tr key={i}>
@@ -186,14 +156,10 @@ function TradeTable() {
     if (option === 'Top gainers') {
       setSortDirection('desc');
       setSortCriteria('change');
-    }
-
-    if (option === 'Top losers') {
+    } else if (option === 'Top losers') {
       setSortCriteria('change');
       setSortDirection('asc');
-    }
-
-    if (option === 'All assets') {
+    } else {
       setSortCriteria('market_cap');
       setSortDirection('desc');
     }

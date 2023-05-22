@@ -2,13 +2,10 @@ import React, { useState, useMemo } from 'react';
 
 import LogoAndName from '../table_components/LogoAndName';
 import { PercentageChangePara } from '../table_components/procentChangeAndPrice';
-import { useGetDataQuery } from '../../../store/apiSlice';
+import { useGetAllAssetsQuery } from '../../../store/apiSlice';
 
 function TopMovers() {
-  const { data = [], isSuccess } = useGetDataQuery({
-    option: 'Top movers',
-    ifChart: false,
-  });
+  const { data = [], isSuccess } = useGetAllAssetsQuery();
   const [seeAllItems, setSeeAllItems] = useState(false);
 
   const sortedCoins = useMemo(() => {
@@ -24,7 +21,6 @@ function TopMovers() {
   };
 
   let items = <p>Loading ...</p>;
-  console.log('Top movers');
 
   if (isSuccess) {
     const slicedCoins = seeAllItems

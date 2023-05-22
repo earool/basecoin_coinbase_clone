@@ -19,7 +19,11 @@ import MarketCapPara from '../table_components/MarketCapPara';
 import Spinner from '../../UI/Spinner';
 import { ReactComponent as Star } from '../../../assets/icons/others/star.svg';
 import useViewport from '../../../hooks/useViewport';
-import { useGetDataQuery } from '../../../store/apiSlice';
+import {
+  useGetAllAssetsQuery,
+  useGetWatchlistAssetsQuery,
+  useGetTrendingAssetsQuery,
+} from '../../../store/apiSlice';
 import getEvery10thElement from '../../../utils/get10thElement';
 import { MAX_MOBILE_WIDTH } from '../../../utils/constants';
 
@@ -47,7 +51,8 @@ function HomeTable() {
   const [seeAllItems, setSeeAllItems] = useState(false);
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
-  const skip = watchlistIds === null || !watchlistIds.length;
+  // const skip = watchlistIds === null || !watchlistIds.length;
+  console.log(watchlistIds);
 
   const optionChangeHandler = (newOption) => {
     setOption(newOption);
@@ -57,12 +62,29 @@ function HomeTable() {
     setSeeAllItems((prevs) => !prevs);
   };
 
-  const { data, isLoading, isSuccess, isError, error } = useGetDataQuery(
-    { watchlistIds, option, ifChart: true },
-    { skip }
-  );
+  const allAssetsResult = useGetAllAssetsQuery(undefined, {
+    skip: option !== 'Top assets',
+  });
 
-  const slicedData = seeAllItems || data?.length < 6 ? data : data?.slice(0, 5);
+  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds, {
+    skip:
+      option !== 'Watchlist' || watchlistIds === null || !watchlistIds.length,
+  });
+
+  const trendingAssetsResult = useGetTrendingAssetsQuery(undefined, {
+    skip: option !== 'Trending',
+  });
+
+  const optionCriteria = {
+    'Top assets': allAssetsResult,
+    Watchlist: watchlistAssetsResult,
+    Trending: trendingAssetsResult,
+  };
+
+  const { data, isLoading, isSuccess, isError, error } = optionCriteria[option];
+
+  const slicedData =
+    seeAllItems || data?.length < 6 ? data.slice(0, 10) : data?.slice(0, 5);
 
   let content;
 
@@ -185,7 +207,7 @@ function HomeTable() {
     content = <p>{error.toString()}</p>;
   }
 
-  return <section className="">{content}</section>;
+  return <section>{content}</section>;
 }
 
 export default HomeTable;
