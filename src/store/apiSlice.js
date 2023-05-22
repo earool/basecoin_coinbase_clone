@@ -1,31 +1,29 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import createFetchUrl from '../utils/createFetchUrl';
+import {
+  createAllAssetsFetchUrl,
+  createWatchlistFetchUrl,
+  createTrendingFetchUrl,
+} from '../utils/createFetchUrl';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://api.coingecko.com/api/v3' }),
   endpoints: (builder) => ({
-    getData: builder.query({
-      query: ({
-        watchlistIds: coinsIds,
-        option,
-        ifChart,
-        pageNumber,
-        allAssetsParam,
-      }) =>
-        createFetchUrl({
-          option,
-          ifChart,
-          coinsIds,
-          pageNumber,
-          allAssetsParam,
-        }),
+    getAllAssets: builder.query({
+      query: () => createAllAssetsFetchUrl(),
     }),
-    searchCoins: builder.query({
-      query: (searchQuery) => `search?query=${searchQuery}`,
+    getWatchlistAssets: builder.query({
+      query: (coinIds) => createWatchlistFetchUrl(coinIds),
+    }),
+    getTrendingAssets: builder.query({
+      query: () => createTrendingFetchUrl(),
     }),
   }),
 });
 
-export const { useGetDataQuery, useSearchCoinsQuery } = apiSlice;
+export const {
+  useGetAllAssetsQuery,
+  useGetWatchlistAssetsQuery,
+  useGetTrendingAssetsQuery,
+} = apiSlice;
