@@ -1,13 +1,7 @@
 import React from 'react';
 
-function HeaderRow({ sortCriteria, sortDirection, handleSort, isAllAssets }) {
+function HeaderRow({ sortCriteria, sortDirection, handleSort }) {
   const handleButtonClick = (criteria) => {
-    if (
-      isAllAssets &&
-      (sortCriteria === 'price' || sortCriteria === 'change')
-    ) {
-      return;
-    }
     handleSort(criteria);
   };
 
@@ -26,20 +20,12 @@ function HeaderRow({ sortCriteria, sortDirection, handleSort, isAllAssets }) {
         </button>
       </th>
       <th>
-        <button
-          type="button"
-          disabled={isAllAssets}
-          onClick={() => handleButtonClick('price')}
-        >
+        <button type="button" onClick={() => handleButtonClick('price')}>
           Price{getSortSymbol('price')}
         </button>
       </th>
       <th>
-        <button
-          type="button"
-          disabled={isAllAssets}
-          onClick={() => handleButtonClick('change')}
-        >
+        <button type="button" onClick={() => handleButtonClick('change')}>
           Change{getSortSymbol('change')}
         </button>
       </th>
