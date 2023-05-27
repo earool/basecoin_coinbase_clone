@@ -41,7 +41,9 @@ function Root() {
     <div className="grid grid-cols-1 sm:grid-rows-smGridHdr sm:grid-cols-smGrid lg:grid-cols-lgGrid">
       {userMenuIsShown && <UserMenu onClose={hideUserMenu} />}
       <NavBar onShowUserMenu={showUserMenu} />
-      <Outlet />
+      <div className="mb-[80px] sm:mb-0">
+        <Outlet />
+      </div>
       {width > MAX_MOBILE_WIDTH ? <Header onShowUserMenu={showUserMenu} /> : ''}
     </div>
   );
