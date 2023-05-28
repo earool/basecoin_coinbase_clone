@@ -4,12 +4,11 @@ function Table({
   children,
   headerRow,
   dataRows,
+  lowerTableComponent,
   placeholderRows,
-  placeholderFetchingRows,
   errorPara,
   isLoading,
   isSuccess,
-  isFetching,
   isError,
 }) {
   let content;
@@ -25,6 +24,7 @@ function Table({
   return (
     <div className="sm:main-container">
       {children}
+      <span className="fixed md:hidden bottom-1/2 left-0" />
       <table
         // onClick={handleTableClick}
         role="grid"
@@ -33,10 +33,14 @@ function Table({
         <thead className="hidden sm:table-header-group border-y-2 border-gray-border">
           {headerRow}
         </thead>
-        <tbody>
-          {content}
-          {isFetching && placeholderFetchingRows}
-        </tbody>
+        <tbody>{content}</tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={3} className="w-full">
+              {lowerTableComponent}
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

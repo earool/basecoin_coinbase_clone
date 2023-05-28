@@ -38,13 +38,20 @@
   /* table */
   .table-styling th,
   .table-styling td {
-    @apply px-4 py-2 border-b-2 border-gray-border;
+    @apply px-4 py-2;
+  }
+
+  .table-styling tr {
+    @apply border-b-2 border-gray-border;
+  }
+
+  .table-styling tbody tr:last-child {
+    @apply border-white;
   }
 
   .table-styling th {
     @apply font-normal text-sm text-start text-gray-400 border-t-2 border-gray-border;
   }
-
 
   .table-styling tbody {
     @apply cursor-pointer;
@@ -53,6 +60,8 @@
   .table-styling tbody>tr:hover {
     @apply bg-gray-50;
   }
+
+
 }
 
 @tailwind utilities;
