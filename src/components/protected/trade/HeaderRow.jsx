@@ -30,7 +30,11 @@ function HeaderRow({ sortCriteria, sortDirection, handleSort }) {
         </button>
       </th>
       <th>
-        <button type="button" onClick={() => handleButtonClick('market_cap')}>
+        <button
+          className="min-w-[100px]"
+          type="button"
+          onClick={() => handleButtonClick('market_cap')}
+        >
           Market cap{getSortSymbol('market_cap')}
         </button>
       </th>

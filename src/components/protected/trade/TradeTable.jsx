@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import Table from '../table_components/Table';
@@ -7,7 +8,7 @@ import HeaderRow from './HeaderRow';
 import LogoAndName, {
   LogoAndNamePlaceholder,
 } from '../table_components/LogoAndName';
-import {
+import MobilePriceAndPercChangeTd, {
   CurrentPricePara,
   PercentageChangePara,
 } from '../table_components/procentChangeAndPrice';
@@ -19,6 +20,7 @@ import {
   useGetAllAssetsQuery,
   useGetWatchlistAssetsQuery,
 } from '../../../store/apiSlice';
+import resetSorting from '../../../utils/resetSorting';
 
 const timeBasedChange = {
   '1D': 'price_change_percentage_24h',
@@ -34,30 +36,57 @@ function TradeTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('market_cap');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [isMobile, setIsMobile] = useState(false);
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
 
   const specificAssetsResult = useGetAllAssetsQuery();
-  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds);
+  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds, {
+    skip: optionDropdown !== 'Watchlist',
+  });
 
   const {
     data = [],
     isLoading,
     isSuccess,
-    isFetching,
     isError,
     error,
   } = optionDropdown === 'Watchlist'
     ? watchlistAssetsResult
     : specificAssetsResult;
 
-  const handleSort = (criteria) => {
-    if (criteria === sortCriteria) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortCriteria(criteria);
+  const spanObserver = useRef();
+  const spanRef = useCallback((node) => {
+    if (spanObserver.current) spanObserver.current.disconnect();
+
+    if (node) {
+      spanObserver.current = new IntersectionObserver((entries) => {
+        const { isIntersecting } = entries[0];
+        setIsMobile(isIntersecting);
+        resetSorting(optionDropdown, setSortCriteria, setSortDirection);
+        setCurrentPage(1);
+      });
+
+      spanObserver.current.observe(node);
     }
-  };
+  }, []);
+
+  const lastItemObserver = useRef();
+  const lastItemRef = useCallback((node) => {
+    if (lastItemObserver.current) lastItemObserver.current.disconnect();
+    if (node) {
+      lastItemObserver.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            setCurrentPage((prevs) => prevs + 1);
+          }
+        },
+        { threshold: 0 }
+      );
+
+      lastItemObserver.current.observe(node);
+    }
+  }, []);
 
   const sortedData = useMemo(() => {
     const sortingCriteria = {
@@ -83,39 +112,84 @@ function TradeTable() {
     return arr;
   }, [data, sortCriteria, timeDropdown, sortDirection]);
 
-  const slicedData = sortedData.slice(0, 10 * currentPage);
+  const slicedData = isMobile
+    ? sortedData.slice(0, 6 * currentPage)
+    : sortedData.slice(0, 10 * currentPage);
 
-  const dataRows = slicedData.map((item) => (
-    <tr key={item.id}>
-      <td>
-        <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
-      </td>
-      <td>
-        <CurrentPricePara currentPrice={item.current_price} />
-      </td>
-      <td>
-        <PercentageChangePara
-          precentChangeValue={item[timeBasedChange[timeDropdown]]}
-        />
-      </td>
-      <td>
-        <MarketCapPara marketCap={item.market_cap} />
-      </td>
-      <td>
-        <Button
-          aria-label="Buy"
-          color="blue"
-          ifFull={false}
-          // onClick={buyHandler}
-        >
-          Buy
-        </Button>
-      </td>
-      <td>
-        <WatchButton />
-      </td>
-    </tr>
-  ));
+  const dataRows = slicedData.map((item, index) => {
+    if (isMobile) {
+      return (
+        <tr key={item.id}>
+          <td>
+            <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
+          </td>
+          <MobilePriceAndPercChangeTd
+            precentChangeValue={item[timeBasedChange[timeDropdown]]}
+            currentPrice={item.current_price}
+          />
+          <td>
+            <WatchButton />
+          </td>
+        </tr>
+      );
+    }
+    const rowContent = (
+      <>
+        <td>
+          <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
+        </td>
+        <td>
+          <CurrentPricePara currentPrice={item.current_price} />
+        </td>
+        <td>
+          <PercentageChangePara
+            precentChangeValue={item[timeBasedChange[timeDropdown]]}
+          />
+        </td>
+        <td>
+          <MarketCapPara marketCap={item.market_cap} />
+        </td>
+        <td>
+          <Button aria-label="Buy" color="blue" ifFull={false}>
+            Buy
+          </Button>
+        </td>
+        <td>
+          <WatchButton />
+        </td>
+      </>
+    );
+
+    if (slicedData.length === index + 1) {
+      return (
+        <tr key={item.id} ref={lastItemRef}>
+          {rowContent}
+        </tr>
+      );
+    }
+    return <tr key={item.id}>{rowContent}</tr>;
+  });
+
+  const handleSort = (criteria) => {
+    if (criteria === sortCriteria) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortCriteria(criteria);
+    }
+  };
+
+  const optionChangeHandler = (option) => {
+    resetSorting(option, setSortCriteria, setSortDirection);
+    setOptionDropdown(option);
+  };
+
+  const timeChangeHandler = (option) => {
+    setTimeDropdown(option);
+  };
+
+  const mobileButtonHandler = () => {
+    setCurrentPage((prevs) => prevs + 1);
+  };
 
   const headerRow = (
     <HeaderRow
@@ -125,67 +199,63 @@ function TradeTable() {
     />
   );
 
-  const placeholderRows = Array.from({ length: 10 }, (_, i) => (
-    <tr key={i}>
-      <td>
-        <LogoAndNamePlaceholder />
-      </td>
-      <td>
-        <Placeholder />
-      </td>
-      <td>
-        <Placeholder />
-      </td>
-      <td>
-        <Placeholder />
-      </td>
-      <td>
-        <Placeholder />
-      </td>
-      <td>
-        <Placeholder ifBigger={false} />
-      </td>
-    </tr>
-  ));
+  const mobileButton = (
+    <div className="sm:hidden">
+      <Button color="gray" ifFull onClick={mobileButtonHandler}>
+        See more!
+      </Button>
+    </div>
+  );
 
-  const placeholderFetchingRows = placeholderRows.slice(0, 2);
+  const placeholderRows = isMobile
+    ? Array.from({ length: 6 }, (_, i) => (
+        <tr key={i}>
+          <td>
+            <LogoAndNamePlaceholder />
+          </td>
+          <td>
+            <Placeholder />
+          </td>
+          <td>
+            <Placeholder ifBigger={false} />
+          </td>
+        </tr>
+      ))
+    : Array.from({ length: 10 }, (_, i) => (
+        <tr key={i}>
+          <td>
+            <LogoAndNamePlaceholder />
+          </td>
+          <td>
+            <Placeholder />
+          </td>
+          <td>
+            <Placeholder />
+          </td>
+          <td>
+            <Placeholder />
+          </td>
+          <td>
+            <Placeholder />
+          </td>
+          <td>
+            <Placeholder ifBigger={false} />
+          </td>
+        </tr>
+      ));
 
   const errorPara = <p>{JSON.stringify(error)}</p>;
-
-  const optionChangeHandler = (option) => {
-    if (option === 'Top gainers') {
-      setSortDirection('desc');
-      setSortCriteria('change');
-    } else if (option === 'Top losers') {
-      setSortCriteria('change');
-      setSortDirection('asc');
-    } else {
-      setSortCriteria('market_cap');
-      setSortDirection('desc');
-    }
-
-    setOptionDropdown(option);
-  };
-
-  const timeChangeHandler = (option) => {
-    setTimeDropdown(option);
-  };
-
-  const addItem = () => {
-    setCurrentPage((prevs) => prevs + 1);
-  };
 
   return (
     <>
       <Table
         headerRow={headerRow}
         dataRows={dataRows}
+        lowerTableComponent={mobileButton}
         placeholderRows={placeholderRows}
-        placeholderFetchingRows={placeholderFetchingRows}
         errorPara={errorPara}
         isLoading={isLoading}
         isSuccess={isSuccess}
-        isFetching={isFetching}
         isError={isError}
       >
         <ActionBar
@@ -195,9 +265,7 @@ function TradeTable() {
           timeDropdown={timeDropdown}
         />
       </Table>
-      <button type="button" onClick={addItem}>
-        addItems!
-      </button>
+      <span ref={spanRef} className="fixed sm:hidden left-0 bottom-1/2" />
     </>
   );
 }
