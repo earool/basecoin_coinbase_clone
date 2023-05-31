@@ -7,6 +7,8 @@ import Signin from './pages/starting_pages/Signin';
 import Root from './pages/protected_pages/Root';
 import HomePage from './pages/protected_pages/HomePage';
 import TradePage from './pages/protected_pages/TradePage';
+import PayPage from './pages/protected_pages/PayPage';
+import AssetsPage from './pages/protected_pages/AssetsPage';
 import useAuth from './hooks/useAuth';
 
 const router = createBrowserRouter([
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       { path: 'trade', element: <TradePage /> },
+      { path: 'assets', element: <AssetsPage /> },
+      { path: 'pay', element: <PayPage /> },
     ],
   },
 ]);
