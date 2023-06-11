@@ -51,8 +51,6 @@ function HomeTable() {
   const [seeAllItems, setSeeAllItems] = useState(false);
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
-  // const skip = watchlistIds === null || !watchlistIds.length;
-  console.log(watchlistIds);
 
   const optionChangeHandler = (newOption) => {
     setOption(newOption);
