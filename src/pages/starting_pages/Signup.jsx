@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+// import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { auth } from '../../firebase';
 import GoBackButton from '../../components/starting/GoBackBtn';
 import useViewport from '../../hooks/useViewport';
 import useInput from '../../hooks/useInput';
-import { createUserDocument } from '../../store/userSlice';
+import { createUser } from '../../store/userSlice';
 import {
   validateName,
   validatePassword,
@@ -68,25 +67,25 @@ function Signup() {
       return;
     }
 
-    await createUserWithEmailAndPassword(
-      auth,
-      enteredEmailValue,
-      enteredPasswordValue
-    )
-      .then((userCredentials) => {
-        const { email, uid } = userCredentials.user;
-        dispatch(createUserDocument({ enteredNameValue, email, uid }));
-        navigate('/home');
-        setSubmitError(null);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        setSubmitError(formatErrorMsg(errorCode));
-      });
+    try {
+      await dispatch(
+        createUser({
+          enteredEmail: enteredEmailValue,
+          enteredPassword: enteredPasswordValue,
+          enteredName: enteredNameValue,
+        })
+      ).unwrap();
 
-    nameReset();
-    emailReset();
-    passwordReset();
+      navigate('/home');
+      setSubmitError(null);
+    } catch (error) {
+      const errorCode = error.code;
+      setSubmitError(formatErrorMsg(errorCode));
+    } finally {
+      nameReset();
+      emailReset();
+      passwordReset();
+    }
   };
 
   return (

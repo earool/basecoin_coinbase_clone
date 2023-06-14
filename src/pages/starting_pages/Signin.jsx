@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   fetchSignInMethodsForEmail,
-  signInWithEmailAndPassword,
+  // signInWithEmailAndPassword,
 } from 'firebase/auth';
 
 import { ReactComponent as UserIcon } from '../../assets/icons/headerbar/user.svg';
 import { auth } from '../../firebase';
 import useInput from '../../hooks/useInput';
+import { signInUser } from '../../store/userSlice';
 import { validateEmail, validatePassword } from '../../utils/validators';
 import formatErrorMsg from '../../utils/formatErrorMsg';
 
 function Signin() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -61,19 +64,21 @@ function Signin() {
   const submitPasswordHandler = async (e) => {
     e.preventDefault();
 
-    await signInWithEmailAndPassword(
-      auth,
-      enteredEmailValue,
-      enteredPasswordValue
-    )
-      .then(() => {
-        setSubmitError(null);
-        navigate('/home');
-      })
-      .catch((error) => {
-        setSubmitError(formatErrorMsg(error.code));
-        passwordReset();
-      });
+    try {
+      await dispatch(
+        signInUser({
+          enteredEmail: enteredEmailValue,
+          enteredPassword: enteredPasswordValue,
+        })
+      ).unwrap();
+
+      setSubmitError(null);
+      navigate('/home');
+    } catch (error) {
+      console.log(error);
+      setSubmitError(formatErrorMsg(error.code));
+      passwordReset();
+    }
   };
 
   const form = showPasswordForm ? (
