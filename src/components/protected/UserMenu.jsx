@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,10 @@ import { ReactComponent as UserIcon } from '../../assets/icons/headerbar/user.sv
 import { ReactComponent as CloseIcon } from '../../assets/icons/headerbar/close.svg';
 import Modal from '../UI/Modal';
 import { auth } from '../../firebase';
-import { resetUserData } from '../../store/userSlice';
 import useViewport from '../../hooks/useViewport';
 import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
 function UserMenu({ onClose }) {
-  const dispatch = useDispatch();
   const navigate = useNavigate('');
   const { width } = useViewport();
 
@@ -22,8 +20,6 @@ function UserMenu({ onClose }) {
   const signOutHandler = () => {
     signOut(auth)
       .then(() => {
-        // Sign-out successful.
-        dispatch(resetUserData());
         navigate('/');
         console.log('Signed out successfully');
       })

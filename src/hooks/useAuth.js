@@ -4,7 +4,11 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 import { auth } from '../firebase';
 import { setLoginStatus } from '../store/authSlice';
-import { startUserDataListener, unsubUserData } from '../store/userSlice';
+import {
+  startUserDataListener,
+  unsubUserData,
+  resetUserData,
+} from '../store/userSlice';
 
 const useAuth = () => {
   const dispatch = useDispatch();
@@ -17,6 +21,7 @@ const useAuth = () => {
       } else {
         dispatch(setLoginStatus(false));
         unsubUserData();
+        resetUserData();
       }
     });
 
