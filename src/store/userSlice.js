@@ -87,10 +87,11 @@ export const { getUserDataFulfilled, getUserDataRejected, resetUserData } =
 
 export default userSlice.reducer;
 
+let unsub = null;
+
 export function startUserDataListener(userId) {
   return (dispatch) => {
-    // eslint-disable-next-line no-unused-vars
-    const unsub = onSnapshot(
+    unsub = onSnapshot(
       doc(db, 'users', userId),
       (snapshot) => {
         dispatch(getUserDataFulfilled(snapshot.data()));
@@ -100,4 +101,11 @@ export function startUserDataListener(userId) {
       }
     );
   };
+}
+
+export function unsubUserData() {
+  if (unsub) {
+    unsub();
+    unsub = null;
+  }
 }

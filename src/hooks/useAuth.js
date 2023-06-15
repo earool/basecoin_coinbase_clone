@@ -4,22 +4,23 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 import { auth } from '../firebase';
 import { setLoginStatus } from '../store/authSlice';
-import { startUserDataListener } from '../store/userSlice';
+import { startUserDataListener, unsubUserData } from '../store/userSlice';
 
 const useAuth = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setLoginStatus(true));
         dispatch(startUserDataListener(user.uid));
       } else {
         dispatch(setLoginStatus(false));
+        unsubUserData();
       }
     });
 
-    return unsubscribe;
+    return unsubAuth;
   }, [dispatch]);
   return null;
 };
