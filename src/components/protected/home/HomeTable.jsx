@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-} from 'chart.js';
 
 import DropdownMenu from '../../UI/DropdownMenu';
+import LineChart from '../LineChart';
 import LogoAndName from '../table_components/LogoAndName';
 import MobilePriceAndPercChangeTd, {
   PercentageChangePara,
@@ -26,24 +19,6 @@ import {
 } from '../../../store/apiSlice';
 import getEvery10thElement from '../../../utils/get10thElement';
 import { MAX_MOBILE_WIDTH } from '../../../utils/constants';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
-
-const options = {
-  scales: {
-    x: {
-      display: false,
-    },
-    y: {
-      display: false,
-    },
-  },
-  elements: {
-    point: {
-      radius: 0,
-    },
-  },
-};
 
 function HomeTable() {
   const { width } = useViewport();
@@ -117,19 +92,6 @@ function HomeTable() {
             {slicedData.map((item) => {
               const { price } = item.sparkline_in_7d;
               const { labels, formattedData } = getEvery10thElement(price);
-              const chartData = {
-                labels,
-                datasets: [
-                  {
-                    label: '',
-                    data: formattedData,
-                    fill: false,
-                    borderColor: 'blue',
-                    borderWidth: 1,
-                    responsive: true,
-                  },
-                ],
-              };
 
               return width < MAX_MOBILE_WIDTH ? (
                 <tr
@@ -144,9 +106,11 @@ function HomeTable() {
                     />
                   </td>
                   <td>
-                    <div className="flex items-center w-28">
-                      <Line data={chartData} options={options} />
-                    </div>
+                    <LineChart
+                      data={formattedData}
+                      containerClass="flex items-center w-28"
+                      labels={labels}
+                    />
                   </td>
                   <MobilePriceAndPercChangeTd
                     currentPrice={item.current_price}
@@ -169,9 +133,11 @@ function HomeTable() {
                     <CurrentPricePara currentPrice={item.current_price} />
                   </td>
                   <td>
-                    <div className="w-24 min-w-[128px]">
-                      <Line data={chartData} options={options} />
-                    </div>
+                    <LineChart
+                      data={formattedData}
+                      containerClass="w-24 min-w-[128px]"
+                      labels={labels}
+                    />
                   </td>
                   <td className="min-w-fit flex-1">
                     <PercentageChangePara
