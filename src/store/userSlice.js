@@ -4,7 +4,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  onSnapshot,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
+} from 'firebase/firestore';
 
 import { db, auth } from '../firebase';
 
@@ -108,4 +115,24 @@ export function unsubUserData() {
     unsub();
     unsub = null;
   }
+}
+
+export function toggleCoinInWatchlist(coinId) {
+  return async (_, getState) => {
+    const state = getState();
+    const { watchlist, userId } = state.user;
+
+    const isCoinInWatchlist = watchlist.includes(coinId);
+    const userDataRef = doc(db, 'users', userId);
+
+    if (isCoinInWatchlist) {
+      await updateDoc(userDataRef, {
+        watchlist: arrayRemove(coinId),
+      });
+    } else {
+      await updateDoc(userDataRef, {
+        watchlist: arrayUnion(coinId),
+      });
+    }
+  };
 }
