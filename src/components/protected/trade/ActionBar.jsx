@@ -12,7 +12,7 @@ function ActionBar({
 }) {
   return (
     <div className="p-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between sm:w-[80vw] lg:w-auto">
         <div className="max-w-none flex-1 c6:max-w-[50%] flex items-center text-sm px-3 h-dropdown-trade border-2 border-gray-border rounded-lg">
           <div className="text-gray-400 w-5 mr-4 ">
             <SearchIcon />
