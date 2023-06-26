@@ -117,6 +117,8 @@ function TradeTable() {
     : sortedData.slice(0, 10 * currentPage);
 
   const dataRows = slicedData.map((item, index) => {
+    const isWatched = watchlistIds.includes(item.id);
+
     if (isMobile) {
       return (
         <tr key={item.id}>
@@ -128,7 +130,7 @@ function TradeTable() {
             currentPrice={item.current_price}
           />
           <td>
-            <WatchButton coinId={item.id} />
+            <WatchButton coinId={item.id} isWatched={isWatched} />
           </td>
         </tr>
       );
@@ -155,7 +157,7 @@ function TradeTable() {
           </Button>
         </td>
         <td>
-          <WatchButton coinId={item.id} />
+          <WatchButton coinId={item.id} isWatched={isWatched} />
         </td>
       </>
     );

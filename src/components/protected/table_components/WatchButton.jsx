@@ -4,8 +4,11 @@ import { useDispatch } from 'react-redux';
 import { toggleCoinInWatchlist } from '../../../store/userSlice';
 import { ReactComponent as Star } from '../../../assets/icons/others/star.svg';
 
-function WatchButton({ coinId }) {
+function WatchButton({ coinId, isWatched }) {
   const dispatch = useDispatch();
+  const styleClass = isWatched
+    ? 'stroke-my-blue text-my-blue'
+    : 'stroke-gray-border-darker';
 
   const toggleWatchlistHandler = () => {
     dispatch(toggleCoinInWatchlist(coinId));
@@ -17,7 +20,7 @@ function WatchButton({ coinId }) {
       type="button"
       onClick={toggleWatchlistHandler}
     >
-      <Star className="stroke-gray-border-darker hover:stroke-my-blue hover:text-my-blue" />
+      <Star className={styleClass} />
     </button>
   );
 }
