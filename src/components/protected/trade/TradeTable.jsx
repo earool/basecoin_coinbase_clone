@@ -42,7 +42,7 @@ function TradeTable() {
 
   const specificAssetsResult = useGetAllAssetsQuery();
   const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds, {
-    skip: optionDropdown !== 'Watchlist',
+    skip: optionDropdown !== 'Watchlist' || !watchlistIds.length,
   });
 
   const {
@@ -51,9 +51,9 @@ function TradeTable() {
     isSuccess,
     isError,
     error,
-  } = optionDropdown === 'Watchlist'
-    ? watchlistAssetsResult
-    : specificAssetsResult;
+  } = optionDropdown !== 'Watchlist'
+    ? specificAssetsResult
+    : watchlistAssetsResult;
 
   const spanObserver = useRef();
   const spanRef = useCallback((node) => {
@@ -155,7 +155,7 @@ function TradeTable() {
           </Button>
         </td>
         <td>
-          <WatchButton />
+          <WatchButton coinId={item.id} />
         </td>
       </>
     );
@@ -169,6 +169,15 @@ function TradeTable() {
     }
     return <tr key={item.id}>{rowContent}</tr>;
   });
+
+  const emptyWatchlistDiv = (
+    <div className="p-3 flex flex-col items-center pt-[10%] h-full">
+      <p className="font-semibold">You&apos;re not watching any assets</p>
+      <p className="italic text-sm">
+        Star an asset to add it to your watchlist
+      </p>
+    </div>
+  );
 
   const handleSort = (criteria) => {
     if (criteria === sortCriteria) {
@@ -247,26 +256,29 @@ function TradeTable() {
   const errorPara = <p>{JSON.stringify(error)}</p>;
 
   return (
-    <>
-      <Table
-        headerRow={headerRow}
-        dataRows={dataRows}
-        lowerTableComponent={mobileButton}
-        placeholderRows={placeholderRows}
-        errorPara={errorPara}
-        isLoading={isLoading}
-        isSuccess={isSuccess}
-        isError={isError}
-      >
-        <ActionBar
-          onOptionChange={optionChangeHandler}
-          onTimeChange={timeChangeHandler}
-          optionDropdown={optionDropdown}
-          timeDropdown={timeDropdown}
+    <div className="sm:main-container min-h-screen">
+      <ActionBar
+        onOptionChange={optionChangeHandler}
+        onTimeChange={timeChangeHandler}
+        optionDropdown={optionDropdown}
+        timeDropdown={timeDropdown}
+      />
+      {optionDropdown === 'Watchlist' && !watchlistIds.length ? (
+        emptyWatchlistDiv
+      ) : (
+        <Table
+          headerRow={headerRow}
+          dataRows={dataRows}
+          lowerTableComponent={mobileButton}
+          placeholderRows={placeholderRows}
+          errorPara={errorPara}
+          isLoading={isLoading}
+          isSuccess={isSuccess}
+          isError={isError}
         />
-      </Table>
+      )}
       <span ref={spanRef} className="fixed sm:hidden left-0 bottom-1/2" />
-    </>
+    </div>
   );
 }
 
