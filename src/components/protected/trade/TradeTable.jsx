@@ -128,7 +128,7 @@ function TradeTable() {
             currentPrice={item.current_price}
           />
           <td>
-            <WatchButton />
+            <WatchButton coinId={item.id} />
           </td>
         </tr>
       );
