@@ -9,8 +9,8 @@ import MobilePriceAndPercChangeTd, {
   CurrentPricePara,
 } from '../table_components/procentChangeAndPrice';
 import MarketCapPara from '../table_components/MarketCapPara';
+import WatchButton from '../table_components/WatchButton';
 import Spinner from '../../UI/Spinner';
-import { ReactComponent as Star } from '../../../assets/icons/others/star.svg';
 import useViewport from '../../../hooks/useViewport';
 import {
   useGetAllAssetsQuery,
@@ -92,6 +92,7 @@ function HomeTable() {
             {slicedData.map((item) => {
               const { price } = item.sparkline_in_7d;
               const { labels, formattedData } = getEvery10thElement(price);
+              const isWatched = watchlistIds.includes(item.id);
 
               return width < MAX_MOBILE_WIDTH ? (
                 <tr
@@ -151,12 +152,7 @@ function HomeTable() {
                     <button type="button">Buy</button>
                   </td>
                   <td>
-                    <button
-                      className="text-white w-5 cursor-pointer flex items-center"
-                      type="button"
-                    >
-                      <Star className="stroke-gray-border-darker hover:stroke-my-blue hover:text-my-blue" />
-                    </button>
+                    <WatchButton coinId={item.id} isWatched={isWatched} />
                   </td>
                 </tr>
               );
