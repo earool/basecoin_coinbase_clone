@@ -11,7 +11,7 @@ import LogoAndName, {
 import MobilePriceAndPercChangeTd, {
   CurrentPricePara,
   PercentageChangePara,
-} from '../table_components/procentChangeAndPrice';
+} from '../table_components/ProcentChangeAndPrice';
 import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Placeholder from '../table_components/Placeholder';

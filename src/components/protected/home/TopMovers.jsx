@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 
 import LogoAndName from '../table_components/LogoAndName';
-import { PercentageChangePara } from '../table_components/procentChangeAndPrice';
+import { PercentageChangePara } from '../table_components/ProcentChangeAndPrice';
 import { useGetAllAssetsQuery } from '../../../store/apiSlice';
 
 function TopMovers() {

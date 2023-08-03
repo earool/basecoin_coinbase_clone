@@ -7,7 +7,7 @@ import LogoAndName from '../table_components/LogoAndName';
 import MobilePriceAndPercChangeTd, {
   PercentageChangePara,
   CurrentPricePara,
-} from '../table_components/procentChangeAndPrice';
+} from '../table_components/ProcentChangeAndPrice';
 import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Spinner from '../../UI/Spinner';
