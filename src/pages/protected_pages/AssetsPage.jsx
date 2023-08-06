@@ -1,7 +1,8 @@
 import React from 'react';
+import Main from '../../components/protected/assets/Main';
 
 function AssetsPage() {
-  return <div>AssetsPage</div>;
+  return <Main />;
 }
 
 export default AssetsPage;

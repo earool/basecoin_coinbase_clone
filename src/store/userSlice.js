@@ -19,9 +19,8 @@ const initialState = {
   userId: null,
   email: null,
   username: null,
-  balance: 0,
   watchlist: null,
-  transactions: null,
+  userAssets: null,
 };
 
 export const createUser = createAsyncThunk(
@@ -41,7 +40,7 @@ export const createUser = createAsyncThunk(
       username: enteredName,
       balance: 0,
       watchlist: [],
-      transactions: [],
+      userAssets: { assetsIds: [], transactions: [], balance: 0, assets: [] },
     };
 
     await setDoc(doc(db, 'users', uid), userData);
@@ -69,7 +68,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUserDataFulfilled: (state, action) => {
-      return action.payload;
+      return { ...state, ...action.payload };
     },
     getUserDataRejected: (state, action) => {
       console.log(action.payload);
