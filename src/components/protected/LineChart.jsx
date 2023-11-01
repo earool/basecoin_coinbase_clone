@@ -26,7 +26,7 @@ const options = {
   },
 };
 
-function LineChart({ data, labels, containerClass }) {
+function LineChart({ data, labels, containerClass, color }) {
   const chartData = {
     labels,
     datasets: [
@@ -34,7 +34,7 @@ function LineChart({ data, labels, containerClass }) {
         label: '',
         data,
         fill: false,
-        borderColor: 'blue',
+        borderColor: color,
         borderWidth: 1,
         responsive: true,
       },

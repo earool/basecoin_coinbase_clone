@@ -15,9 +15,7 @@ function HeaderRow({ sortCriteria, sortDirection, handleSort }) {
   return (
     <tr>
       <th>
-        <button type="button" onClick={() => handleButtonClick('id')}>
-          Name{getSortSymbol('id')}
-        </button>
+        <button type="button">Name</button>
       </th>
       <th>
         <button type="button" onClick={() => handleButtonClick('price')}>
@@ -33,9 +31,9 @@ function HeaderRow({ sortCriteria, sortDirection, handleSort }) {
         <button
           className="min-w-[100px]"
           type="button"
-          onClick={() => handleButtonClick('market_cap')}
+          onClick={() => handleButtonClick('marketCap')}
         >
-          Market cap{getSortSymbol('market_cap')}
+          Market cap{getSortSymbol('marketCap')}
         </button>
       </th>
       <th aria-label="buy" />

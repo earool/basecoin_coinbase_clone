@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import Table from '../table_components/Table';
@@ -16,44 +16,43 @@ import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Placeholder from '../table_components/Placeholder';
 import Button from '../../UI/Button';
-import {
-  useGetAllAssetsQuery,
-  useGetWatchlistAssetsQuery,
-} from '../../../store/apiSlice';
 import resetSorting from '../../../utils/resetSorting';
-
-const timeBasedChange = {
-  '1D': 'price_change_percentage_24h',
-  '1H': 'price_change_percentage_1h_in_currency',
-  '1W': 'price_change_percentage_7d_in_currency',
-  '1M': 'price_change_percentage_30d_in_currency',
-  '1Y': 'price_change_percentage_1y_in_currency',
-};
+import useFetchCoinsData from '../../../hooks/useFetchCoins';
+import { createTradeUrl } from '../../../utils/buildUrl';
+import { TRADE_TIME_URL_PARAMS } from '../../../utils/constants';
 
 function TradeTable() {
+  const [coins, setCoins] = useState([]);
   const [optionDropdown, setOptionDropdown] = useState('All assets');
   const [timeDropdown, setTimeDropdown] = useState('1D');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortCriteria, setSortCriteria] = useState('market_cap');
+  const [sortCriteria, setSortCriteria] = useState('marketCap');
   const [sortDirection, setSortDirection] = useState('desc');
   const [isMobile, setIsMobile] = useState(false);
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
+  const url = createTradeUrl(
+    optionDropdown,
+    TRADE_TIME_URL_PARAMS[timeDropdown],
+    sortCriteria,
+    sortDirection,
+    currentPage
+  );
 
-  const specificAssetsResult = useGetAllAssetsQuery();
-  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds, {
-    skip: optionDropdown !== 'Watchlist' || !watchlistIds.length,
-  });
+  const { isLoading, isError, isSuccess, error, fetchCoins } =
+    useFetchCoinsData();
 
-  const {
-    data = [],
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = optionDropdown !== 'Watchlist'
-    ? specificAssetsResult
-    : watchlistAssetsResult;
+  useEffect(() => {
+    const transformCoins = (coinsObj) => {
+      const { coins: loadedCoins } = coinsObj.data;
+      if (currentPage !== 1 && optionDropdown !== 'Watchlist') {
+        setCoins((prevs) => [...prevs, ...loadedCoins]);
+      } else {
+        setCoins(loadedCoins);
+      }
+    };
+    fetchCoins(url, transformCoins);
+  }, [fetchCoins, url]);
 
   const spanObserver = useRef();
   const spanRef = useCallback((node) => {
@@ -88,49 +87,25 @@ function TradeTable() {
     }
   }, []);
 
-  const sortedData = useMemo(() => {
-    const sortingCriteria = {
-      price: 'current_price',
-      change: timeBasedChange[timeDropdown],
-      market_cap: 'market_cup',
-    };
-
-    const arr = data.slice();
-    if (sortCriteria === 'id') {
-      arr.sort((a, b) => b.id.localeCompare(a.id));
-    } else {
-      arr.sort(
-        (a, b) =>
-          b[sortingCriteria[sortCriteria]] - a[sortingCriteria[sortCriteria]]
-      );
-    }
-
-    if (sortDirection === 'asc') {
-      arr.reverse();
-    }
-
-    return arr;
-  }, [data, sortCriteria, timeDropdown, sortDirection]);
-
-  const slicedData = isMobile
-    ? sortedData.slice(0, 6 * currentPage)
-    : sortedData.slice(0, 10 * currentPage);
-
-  const dataRows = slicedData.map((item, index) => {
-    const isWatched = watchlistIds.includes(item.id);
+  const dataRows = coins.map((item, index) => {
+    const isWatched = watchlistIds && watchlistIds.includes(item.uuid);
 
     if (isMobile) {
       return (
-        <tr key={item.id}>
+        <tr key={item.uuid}>
           <td>
-            <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
+            <LogoAndName
+              image={item.iconUrl}
+              symbol={item.symbol}
+              name={item.name}
+            />
           </td>
           <MobilePriceAndPercChangeTd
-            precentChangeValue={item[timeBasedChange[timeDropdown]]}
-            currentPrice={item.current_price}
+            precentChangeValue={item.change}
+            currentPrice={item.price}
           />
           <td>
-            <WatchButton coinId={item.id} isWatched={isWatched} />
+            <WatchButton coinId={item.uuid} isWatched={isWatched} />
           </td>
         </tr>
       );
@@ -138,18 +113,20 @@ function TradeTable() {
     const rowContent = (
       <>
         <td>
-          <LogoAndName image={item.image} symbol={item.symbol} id={item.id} />
-        </td>
-        <td>
-          <CurrentPricePara currentPrice={item.current_price} />
-        </td>
-        <td>
-          <PercentageChangePara
-            precentChangeValue={item[timeBasedChange[timeDropdown]]}
+          <LogoAndName
+            image={item.iconUrl}
+            symbol={item.symbol}
+            name={item.name}
           />
         </td>
         <td>
-          <MarketCapPara marketCap={item.market_cap} />
+          <CurrentPricePara currentPrice={item.price} />
+        </td>
+        <td>
+          <PercentageChangePara precentChangeValue={item.change} />
+        </td>
+        <td>
+          <MarketCapPara marketCap={item.marketCap} />
         </td>
         <td>
           <Button aria-label="Buy" color="blue" ifFull={false}>
@@ -157,19 +134,19 @@ function TradeTable() {
           </Button>
         </td>
         <td>
-          <WatchButton coinId={item.id} isWatched={isWatched} />
+          <WatchButton coinId={item.uuid} isWatched={isWatched} />
         </td>
       </>
     );
 
-    if (slicedData.length === index + 1) {
+    if (coins.length === index + 1) {
       return (
-        <tr key={item.id} ref={lastItemRef}>
+        <tr key={item.uuid} ref={lastItemRef}>
           {rowContent}
         </tr>
       );
     }
-    return <tr key={item.id}>{rowContent}</tr>;
+    return <tr key={item.uuid}>{rowContent}</tr>;
   });
 
   const emptyWatchlistDiv = (
@@ -191,6 +168,7 @@ function TradeTable() {
 
   const optionChangeHandler = (option) => {
     resetSorting(option, setSortCriteria, setSortDirection);
+    setCurrentPage(1);
     setOptionDropdown(option);
   };
 

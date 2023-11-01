@@ -7,6 +7,6 @@ export default function resetSorting(option, setCriteria, setDirection) {
     setCriteria('change');
   } else {
     setDirection('desc');
-    setCriteria('market_cap');
+    setCriteria('marketCap');
   }
 }
