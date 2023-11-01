@@ -9,12 +9,12 @@ const cssProps = {
   innerML: 'ml-2',
 };
 
-function LogoAndName({ image, symbol, id }) {
+function LogoAndName({ image, symbol, name }) {
   return (
     <div className={cssProps.outerDiv}>
       <img src={image} alt="logo" className={cssProps.imgWidth} />
       <div className={cssProps.innerML}>
-        <h6 className="font-medium">{capitalizeWord(id)}</h6>
+        <h6 className="font-medium">{capitalizeWord(name)}</h6>
         <p className="text-sm text-gray-border-darker">
           {symbol.toUpperCase()}
         </p>

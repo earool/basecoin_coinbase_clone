@@ -4,7 +4,11 @@ import React, { useState } from 'react';
 
 import { ReactComponent as DownCavet } from '../../assets/icons/others/down_cavet.svg';
 import { ReactComponent as DoneIcon } from '../../assets/icons/others/done.svg';
-import { TRADE_OPTIONS } from '../../utils/constants';
+import {
+  TRADE_OPTIONS,
+  HOME_OPTIONS,
+  TRADE_TIME_OPTIONS,
+} from '../../utils/constants';
 
 function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
   const ifHome = dropdownType === 'home';
@@ -22,9 +26,9 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
   };
 
   const menuOptions = {
-    home: ['Watchlist', 'Top assets', 'Trending'],
+    home: HOME_OPTIONS,
     trade: TRADE_OPTIONS,
-    tradeTime: ['1H', '1D', '1W', '1M', '1Y'],
+    tradeTime: TRADE_TIME_OPTIONS,
   };
 
   const classNames = {

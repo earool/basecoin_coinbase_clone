@@ -17,7 +17,11 @@ function Table({
   } else if (isSuccess) {
     content = dataRows;
   } else if (isError) {
-    content = errorPara;
+    content = (
+      <tr>
+        <th>{errorPara}</th>
+      </tr>
+    );
   }
 
   return (

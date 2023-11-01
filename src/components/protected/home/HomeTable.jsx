@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import DropdownMenu from '../../UI/DropdownMenu';
@@ -11,21 +11,33 @@ import MobilePriceAndPercChangeTd, {
 import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Spinner from '../../UI/Spinner';
+import useFetchCoinsData from '../../../hooks/useFetchCoins';
 import useViewport from '../../../hooks/useViewport';
-import {
-  useGetAllAssetsQuery,
-  useGetWatchlistAssetsQuery,
-  useGetTrendingAssetsQuery,
-} from '../../../store/apiSlice';
-import getEvery10thElement from '../../../utils/get10thElement';
-import { MAX_MOBILE_WIDTH } from '../../../utils/constants';
+import { createHomeUrl } from '../../../utils/buildUrl';
+import prepareSparklineData from '../../../utils/prepareSparklineData';
+import { HOME_OPTIONS, MAX_MOBILE_WIDTH } from '../../../utils/constants';
 
 function HomeTable() {
-  const { width } = useViewport();
-  const [option, setOption] = useState('Watchlist');
+  const [coins, setCoins] = useState([]);
+  const [option, setOption] = useState(HOME_OPTIONS[0]);
   const [seeAllItems, setSeeAllItems] = useState(false);
+  const { width } = useViewport();
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
+  const url = createHomeUrl(option);
+
+  const { fetchCoins, isLoading, isSuccess, isError, error } =
+    useFetchCoinsData(url);
+
+  useEffect(() => {
+    const transformCoins = (coinsObj) => {
+      const { coins: loadedCoins } = coinsObj.data;
+
+      setCoins(loadedCoins);
+    };
+
+    fetchCoins(url, transformCoins);
+  }, [fetchCoins, url]);
 
   const optionChangeHandler = (newOption) => {
     setOption(newOption);
@@ -35,29 +47,8 @@ function HomeTable() {
     setSeeAllItems((prevs) => !prevs);
   };
 
-  const allAssetsResult = useGetAllAssetsQuery(undefined, {
-    skip: option !== 'Top assets',
-  });
-
-  const watchlistAssetsResult = useGetWatchlistAssetsQuery(watchlistIds, {
-    skip:
-      option !== 'Watchlist' || watchlistIds === null || !watchlistIds.length,
-  });
-
-  const trendingAssetsResult = useGetTrendingAssetsQuery(undefined, {
-    skip: option !== 'Trending',
-  });
-
-  const optionCriteria = {
-    'Top assets': allAssetsResult,
-    Watchlist: watchlistAssetsResult,
-    Trending: trendingAssetsResult,
-  };
-
-  const { data, isLoading, isSuccess, isError, error } = optionCriteria[option];
-
-  const slicedData =
-    seeAllItems || data?.length < 6 ? data.slice(0, 10) : data?.slice(0, 5);
+  const slicedCoins =
+    seeAllItems || coins?.length < 6 ? coins.slice(0, 10) : coins?.slice(0, 5);
 
   let content;
 
@@ -83,76 +74,75 @@ function HomeTable() {
               onClick={seeAllItemsHandler}
               className="ml-5 text-my-blue hover:text-my-blue-darker"
             >
-              {data.length > 5 && (seeAllItems ? 'See less' : 'See all')}
+              {coins.length > 5 && (seeAllItems ? 'See less' : 'See all')}
             </button>
           </div>
         </div>
         <table className="w-full">
           <tbody>
-            {slicedData.map((item) => {
-              const { price } = item.sparkline_in_7d;
-              const { labels, formattedData } = getEvery10thElement(price);
-              const isWatched = watchlistIds.includes(item.id);
+            {slicedCoins.map((item) => {
+              const { labels, data } = prepareSparklineData(item.sparkline);
+              const isWatched = watchlistIds.includes(item.uuid);
 
               return width < MAX_MOBILE_WIDTH ? (
                 <tr
                   className="px-3 [&>td]:my-2 hover:bg-gray-border flex items-center justify-between"
-                  key={item.id}
+                  key={item.uuid}
                 >
                   <td className="min-w-[128px]">
                     <LogoAndName
                       symbol={item.symbol}
-                      id={item.id}
-                      image={item.image}
+                      image={item.iconUrl}
+                      name={item.name}
                     />
                   </td>
                   <td>
                     <LineChart
-                      data={formattedData}
+                      data={data}
                       containerClass="flex items-center w-28"
                       labels={labels}
+                      color={item.color}
                     />
                   </td>
                   <MobilePriceAndPercChangeTd
-                    currentPrice={item.current_price}
-                    precentChangeValue={item.price_change_percentage_24h}
+                    currentPrice={item.price}
+                    precentChangeValue={item.change}
                   />
                 </tr>
               ) : (
                 <tr
                   className="px-2 [&>td]:my-2 [&>td]:mx-3 hover:bg-gray-border flex items-center"
-                  key={item.id}
+                  key={item.uuid}
                 >
                   <td className="min-w-[128px] max-w-[35%] flex-1">
                     <LogoAndName
                       symbol={item.symbol}
-                      id={item.id}
-                      image={item.image}
+                      image={item.iconUrl}
+                      name={item.name}
                     />
                   </td>
                   <td className="w-[128px]">
-                    <CurrentPricePara currentPrice={item.current_price} />
+                    <CurrentPricePara currentPrice={item.price} />
                   </td>
                   <td>
                     <LineChart
-                      data={formattedData}
+                      data={data}
                       containerClass="w-24 min-w-[128px]"
                       labels={labels}
+                      color={item.color}
                     />
                   </td>
                   <td className="min-w-fit flex-1">
-                    <PercentageChangePara
-                      precentChangeValue={item.price_change_percentage_24h}
-                    />
+                    <PercentageChangePara precentChangeValue={item.change} />
                   </td>
                   <td className="w-[128px]">
-                    <MarketCapPara marketCap={item.market_cap} />
+                    <MarketCapPara marketCap={item.marketCap} />
                   </td>
                   <td className="font-medium text-my-blue hover:text-my-blue-darker">
                     <button type="button">Buy</button>
                   </td>
                   <td>
-                    <WatchButton coinId={item.id} isWatched={isWatched} />
+                    <WatchButton coinId={item.uuid} isWatched={isWatched} />
                   </td>
                 </tr>
               );

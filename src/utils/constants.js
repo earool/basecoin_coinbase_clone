@@ -1,6 +1,6 @@
 export const MAX_MOBILE_WIDTH = 680;
 
-export const TRADE_TIME_OPTIONS = ['1H', '1D', '1W', '1M', '1Y'];
+export const HOME_OPTIONS = ['Watchlist', 'Top assets', 'Trending'];
 
 export const TRADE_OPTIONS = [
   'All assets',
@@ -8,3 +8,12 @@ export const TRADE_OPTIONS = [
   'Top gainers',
   'Top losers',
 ];
+
+export const TRADE_TIME_OPTIONS = ['1D', '1H', '1W', '1M', '1Y'];
+export const TRADE_TIME_URL_PARAMS = {
+  '1D': '24h',
+  '1H': '1h',
+  '1W': '7d',
+  '1M': '30d',
+  '1Y': '1y',
+};

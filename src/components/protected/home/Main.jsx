@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as RightCaret } from '../../../assets/icons/others/right_caret.svg';
 import MobileTransactionMenu from './MobileTransactionMenu';
 import HomeTable from './HomeTable';
-import TopMovers from './TopMovers';
+// import TopMovers from './TopMovers';
 
 function HomeMain() {
   const balance = 0;
@@ -26,7 +26,7 @@ function HomeMain() {
       </section>
       <HomeTable />
       <section className="hidden lg:block border-l border-gray-light col-start-2 col-end-3 row-start-1 row-end-3">
-        <TopMovers />
+        {/* <TopMovers /> */}
       </section>
     </main>
   );
