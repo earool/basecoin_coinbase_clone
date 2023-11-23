@@ -9,6 +9,15 @@ function MobilePriceAndPercChangeTd({ precentChangeValue, currentPrice }) {
   );
 }
 
+export function PriceAndPercChangeTd({ precentChangeValue, currentPrice }) {
+  return (
+    <td className="flex flex-col min-w-fit pl-2">
+      <PercentageChangePara precentChangeValue={precentChangeValue} />
+      <CurrentPricePara currentPrice={currentPrice} />
+    </td>
+  );
+}
+
 export function PercentageChangePara({ precentChangeValue }) {
   if (!precentChangeValue) {
     return <p>Invalid value</p>;
