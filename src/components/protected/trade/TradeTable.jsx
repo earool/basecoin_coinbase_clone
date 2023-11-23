@@ -18,7 +18,7 @@ import Placeholder from '../table_components/Placeholder';
 import Button from '../../UI/Button';
 import resetSorting from '../../../utils/resetSorting';
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
-import { createTradeUrl } from '../../../utils/buildUrl';
+import { createTradeUrl, MAX_PAGE_NUMBER } from '../../../utils/buildUrl';
 import { TRADE_TIME_URL_PARAMS } from '../../../utils/constants';
 
 function TradeTable() {
@@ -77,7 +77,9 @@ function TradeTable() {
       lastItemObserver.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            setCurrentPage((prevs) => prevs + 1);
+            setCurrentPage((prevs) =>
+              prevs < MAX_PAGE_NUMBER ? prevs + 1 : prevs
+            );
           }
         },
         { threshold: 0 }
@@ -177,6 +179,7 @@ function TradeTable() {
   };
 
   const mobileButtonHandler = () => {
+    // set limit
     setCurrentPage((prevs) => prevs + 1);
   };
 
