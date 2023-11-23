@@ -41,6 +41,10 @@
     @apply px-4 py-2;
   }
 
+  .table-styling > tfoot > tr > td {
+    @apply p-0;
+  }
+
   .table-styling tr {
     @apply border-b-2 border-gray-border;
   }
@@ -57,11 +61,9 @@
     @apply cursor-pointer;
   }
 
-  .table-styling tbody>tr:hover {
+  .table-styling tbody > tr:hover {
     @apply bg-gray-50;
   }
-
-
 }
 
 @tailwind utilities;
