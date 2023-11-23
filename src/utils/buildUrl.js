@@ -4,6 +4,7 @@ import store from '../store/store';
 const BASE_URL = 'https://api.coinranking.com/v2/coins';
 const SCOPE_LIMIT = 125; // Trade page
 const LIMIT = 25;
+export const MAX_PAGE_NUMBER = 125 / LIMIT;
 
 function buildUrl(params, baseUrl = BASE_URL) {
   const searchParams = new URLSearchParams();
@@ -17,11 +18,16 @@ function buildUrl(params, baseUrl = BASE_URL) {
   return queryString ? `${baseUrl}?${queryString}` : '';
 }
 
+function createUuidsString(coinIdsArray) {
+  return coinIdsArray?.map((uuid) => `uuids[]=${uuid}`).join('&');
+}
+
 function createWatchlistUrl(
   timePeriod = '24h',
   orderBy = 'marketCap',
   orderDirection = 'desc'
 ) {
+  // getting watchlistIds this way might be incorrect
   const state = store.getState();
   const { watchlist: coinIdsArray } = state.user;
 
@@ -35,11 +41,7 @@ function createWatchlistUrl(
     orderDirection,
   });
 
-  const uuidsString = coinIdsArray.reduce((prev, curr, i) => {
-    const string =
-      i !== coinIdsArray.length - 1 ? `uuids[]=${curr}&` : `uuids[]=${curr}`;
-    return prev.concat(string);
-  }, '');
+  const uuidsString = createUuidsString(coinIdsArray);
 
   return `${paramsString}&${uuidsString}`;
 }
@@ -80,4 +82,14 @@ export function createTradeUrl(
   };
 
   return buildUrl(tradeParams);
+}
+
+export function createAssetsUrl(assetsIds) {
+  if (!assetsIds || !assetsIds.length) {
+    return '';
+  }
+
+  const uuidsString = createUuidsString(assetsIds);
+
+  return `${BASE_URL}?${uuidsString}`;
 }
