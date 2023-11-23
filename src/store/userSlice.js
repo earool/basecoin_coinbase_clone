@@ -20,7 +20,7 @@ const initialState = {
   email: null,
   username: null,
   watchlist: null,
-  userAssets: null,
+  userAssets: { assetsIds: null, transactions: null, balance: 0, assets: null },
 };
 
 export const createUser = createAsyncThunk(
@@ -40,7 +40,7 @@ export const createUser = createAsyncThunk(
       username: enteredName,
       balance: 0,
       watchlist: [],
-      userAssets: { assetsIds: [], transactions: [], balance: 0, assets: [] },
+      userAssets: { assetsIds: [], transactions: [], balance: 0, assets: {} },
     };
 
     await setDoc(doc(db, 'users', uid), userData);
