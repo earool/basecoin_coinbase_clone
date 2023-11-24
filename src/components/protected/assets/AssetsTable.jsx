@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import Table from '../table_components/Table';
@@ -12,18 +12,28 @@ import AllocationDiv from '../table_components/AllocationDiv';
 import Placeholder from '../table_components/Placeholder';
 
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
+import useOnScreen from '../../../hooks/useOnScreen';
 import { createAssetsUrl } from '../../../utils/buildUrl';
 
 function AssetsTable() {
   const [coins, setCoins] = useState([]);
-  // const [isMobile, setIsMobile] = useState(false);
-  const isMobile = false;
+  const [isMobile, setIsMobile] = useState(false);
   // transactions missing
   const { balance, assets, assetsIds } = useSelector(
     (state) => state.user.userAssets
   );
   const { isLoading, isError, isSuccess, error, fetchCoins } =
     useFetchCoinsData();
+
+  const intersectionCallback = useCallback((entries) => {
+    const { isIntersecting } = entries[0];
+    setIsMobile(isIntersecting);
+  }, []);
+
+  const refComponent = useOnScreen(
+    intersectionCallback,
+    'sm:hidden w-0 absolute top-1/2 left-1/2'
+  );
 
   const url = createAssetsUrl(assetsIds);
 
@@ -44,7 +54,7 @@ function AssetsTable() {
 
     if (isMobile) {
       return (
-        <tr key={item.uuid}>
+        <tr key={item.uuid} className="flex justify-between">
           <td>
             <LogoAndName
               image={item.iconUrl}
@@ -138,6 +148,7 @@ function AssetsTable() {
           isError={isError}
         />
       )}
+      {refComponent}
     </div>
   );
 }
