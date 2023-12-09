@@ -9,11 +9,19 @@ export const TRADE_OPTIONS = [
   'Top losers',
 ];
 
-export const TRADE_TIME_OPTIONS = ['1D', '1H', '1W', '1M', '1Y'];
-export const TRADE_TIME_URL_PARAMS = {
-  '1D': '24h',
-  '1H': '1h',
-  '1W': '7d',
-  '1M': '30d',
-  '1Y': '1y',
-};
+export const TIME_PERIOD_OPTIONS = ['1D', '1H', '1W', '1M', '1Y'];
+
+export const MONTHS = [
+  'JAN',
+  'FEB',
+  'MAR',
+  'APR',
+  'MAY',
+  'JUN',
+  'JUL',
+  'AUG',
+  'SEP',
+  'OCT',
+  'NOV',
+  'DEC',
+];

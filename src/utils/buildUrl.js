@@ -5,12 +5,23 @@ const BASE_URL = 'https://api.coinranking.com/v2/coins';
 const SCOPE_LIMIT = 125; // Trade page
 const LIMIT = 25;
 export const MAX_PAGE_NUMBER = 125 / LIMIT;
+export const TIME_URL_CONVERTER = {
+  '1D': '24h',
+  '1H': '1h',
+  '1W': '7d',
+  '1M': '30d',
+  '1Y': '1y',
+};
 
 function buildUrl(params, baseUrl = BASE_URL) {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([k, v]) => {
-    searchParams.append(k, v);
+    if (k === 'timePeriod') {
+      searchParams.append(k, TIME_URL_CONVERTER[v]);
+    } else {
+      searchParams.append(k, v);
+    }
   });
 
   const queryString = searchParams.toString();
@@ -23,7 +34,7 @@ function createUuidsString(coinIdsArray) {
 }
 
 function createWatchlistUrl(
-  timePeriod = '24h',
+  timePeriod = '1D',
   orderBy = 'marketCap',
   orderDirection = 'desc'
 ) {
@@ -84,12 +95,15 @@ export function createTradeUrl(
   return buildUrl(tradeParams);
 }
 
-export function createAssetsUrl(assetsIds) {
+export function createAssetsUrl(assetsIds, timePeriod = '1D') {
   if (!assetsIds || !assetsIds.length) {
     return '';
   }
 
+  const paramsString = buildUrl({
+    timePeriod,
+  });
   const uuidsString = createUuidsString(assetsIds);
 
-  return `${BASE_URL}?${uuidsString}`;
+  return `${paramsString}&${uuidsString}`;
 }

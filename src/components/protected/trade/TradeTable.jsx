@@ -19,7 +19,6 @@ import Button from '../../UI/Button';
 import resetSorting from '../../../utils/resetSorting';
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
 import { createTradeUrl, MAX_PAGE_NUMBER } from '../../../utils/buildUrl';
-import { TRADE_TIME_URL_PARAMS } from '../../../utils/constants';
 
 function TradeTable() {
   const [coins, setCoins] = useState([]);
@@ -33,7 +32,7 @@ function TradeTable() {
   const watchlistIds = useSelector((state) => state.user.watchlist);
   const url = createTradeUrl(
     optionDropdown,
-    TRADE_TIME_URL_PARAMS[timeDropdown],
+    timeDropdown,
     sortCriteria,
     sortDirection,
     currentPage

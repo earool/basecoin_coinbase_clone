@@ -7,7 +7,7 @@ import { ReactComponent as DoneIcon } from '../../assets/icons/others/done.svg';
 import {
   TRADE_OPTIONS,
   HOME_OPTIONS,
-  TRADE_TIME_OPTIONS,
+  TIME_PERIOD_OPTIONS,
 } from '../../utils/constants';
 
 function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
@@ -28,7 +28,7 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
   const menuOptions = {
     home: HOME_OPTIONS,
     trade: TRADE_OPTIONS,
-    tradeTime: TRADE_TIME_OPTIONS,
+    tradeTime: TIME_PERIOD_OPTIONS,
   };
 
   const classNames = {
