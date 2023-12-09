@@ -6,11 +6,14 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Tooltip,
 } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, [
+  Tooltip,
+]);
 
-const options = {
+const defaultOptions = {
   scales: {
     x: {
       display: false,
@@ -22,13 +25,26 @@ const options = {
   elements: {
     point: {
       radius: 0,
+      hoverRadius: 0,
+    },
+  },
+  plugins: {
+    tooltip: {
+      enabled: false,
     },
   },
 };
 
-function LineChart({ data, labels, containerClass, color }) {
+function LineChart({
+  data,
+  labels,
+  containerClass,
+  color,
+  options = defaultOptions,
+}) {
   const chartData = {
     labels,
+    type: 'line',
     datasets: [
       {
         label: '',
