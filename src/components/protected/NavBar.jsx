@@ -1,6 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import useViewport from '../../hooks/useViewport';
 import IconLink from '../UI/IconLink';
 import { ReactComponent as Logo } from '../../assets/icons/headerbar/logo.svg';
 import { ReactComponent as Hamburger } from '../../assets/icons/headerbar/hamburger_menu.svg';
@@ -8,10 +8,9 @@ import { ReactComponent as Assets } from '../../assets/icons/navbar/assets.svg';
 import { ReactComponent as HomeIcon } from '../../assets/icons/navbar/homeIcon.svg';
 import { ReactComponent as Pay } from '../../assets/icons/navbar/pay.svg';
 import { ReactComponent as Trade } from '../../assets/icons/navbar/trade.svg';
-import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
 function NavBar({ onShowUserMenu }) {
-  const { width } = useViewport();
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
 
   const navIcons = (
     <>
@@ -30,7 +29,7 @@ function NavBar({ onShowUserMenu }) {
     </>
   );
 
-  return width < MAX_MOBILE_WIDTH ? (
+  return isMobile ? (
     <>
       <nav className="flex justify-between items-center py-2 px-4 border-b-2 border-gray-light">
         <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-6" />

@@ -1,5 +1,3 @@
-export const MAX_MOBILE_WIDTH = 680;
-
 export const HOME_OPTIONS = ['Watchlist', 'Top assets', 'Trending'];
 
 export const TRADE_OPTIONS = [

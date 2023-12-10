@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import Table from '../table_components/Table';
@@ -18,6 +17,7 @@ import Placeholder from '../table_components/Placeholder';
 import Button from '../../UI/Button';
 import resetSorting from '../../../utils/resetSorting';
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
+import useOnScreen from '../../../hooks/useOnScreen';
 import { createTradeUrl, MAX_PAGE_NUMBER } from '../../../utils/buildUrl';
 
 function TradeTable() {
@@ -27,9 +27,13 @@ function TradeTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('marketCap');
   const [sortDirection, setSortDirection] = useState('desc');
-  const [isMobile, setIsMobile] = useState(false);
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
+
+  const { isLoading, isError, isSuccess, error, fetchCoins } =
+    useFetchCoinsData();
+
   const url = createTradeUrl(
     optionDropdown,
     timeDropdown,
@@ -37,9 +41,6 @@ function TradeTable() {
     sortDirection,
     currentPage
   );
-
-  const { isLoading, isError, isSuccess, error, fetchCoins } =
-    useFetchCoinsData();
 
   useEffect(() => {
     const transformCoins = (coinsObj) => {
@@ -51,42 +52,15 @@ function TradeTable() {
       }
     };
     fetchCoins(url, transformCoins);
-  }, [fetchCoins, url]);
+  }, [currentPage, fetchCoins, optionDropdown, url]);
 
-  const spanObserver = useRef();
-  const spanRef = useCallback((node) => {
-    if (spanObserver.current) spanObserver.current.disconnect();
-
-    if (node) {
-      spanObserver.current = new IntersectionObserver((entries) => {
-        const { isIntersecting } = entries[0];
-        setIsMobile(isIntersecting);
-        resetSorting(optionDropdown, setSortCriteria, setSortDirection);
-        setCurrentPage(1);
-      });
-
-      spanObserver.current.observe(node);
+  const lastElementCallback = (entries) => {
+    if (entries[0].isIntersecting) {
+      setCurrentPage((prevs) => (prevs < MAX_PAGE_NUMBER ? prevs + 1 : prevs));
     }
-  }, []);
+  };
 
-  const lastItemObserver = useRef();
-  const lastItemRef = useCallback((node) => {
-    if (lastItemObserver.current) lastItemObserver.current.disconnect();
-    if (node) {
-      lastItemObserver.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setCurrentPage((prevs) =>
-              prevs < MAX_PAGE_NUMBER ? prevs + 1 : prevs
-            );
-          }
-        },
-        { threshold: 0 }
-      );
-
-      lastItemObserver.current.observe(node);
-    }
-  }, []);
+  const lastElementRef = useOnScreen(lastElementCallback);
 
   const dataRows = coins.map((item, index) => {
     const isWatched = watchlistIds && watchlistIds.includes(item.uuid);
@@ -140,9 +114,9 @@ function TradeTable() {
       </>
     );
 
-    if (coins.length === index + 1) {
+    if (coins.length === index + 1 && optionDropdown !== 'Watchlist') {
       return (
-        <tr key={item.uuid} ref={lastItemRef}>
+        <tr ref={lastElementRef} key={item.uuid} className="relative">
           {rowContent}
         </tr>
       );
@@ -259,7 +233,6 @@ function TradeTable() {
           isError={isError}
         />
       )}
-      <span ref={spanRef} className="fixed sm:hidden left-0 bottom-1/2" />
     </div>
   );
 }

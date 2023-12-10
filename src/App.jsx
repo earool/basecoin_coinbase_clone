@@ -10,6 +10,7 @@ import TradePage from './pages/protected_pages/TradePage';
 import PayPage from './pages/protected_pages/PayPage';
 import AssetsPage from './pages/protected_pages/AssetsPage';
 import useAuth from './hooks/useAuth';
+import useMobileCheck from './hooks/useMobileCheck';
 
 const router = createBrowserRouter([
   {
@@ -40,9 +41,15 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const TargetElement = useMobileCheck();
   useAuth();
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      {TargetElement}
+    </>
+  );
 }
 
 export default App;

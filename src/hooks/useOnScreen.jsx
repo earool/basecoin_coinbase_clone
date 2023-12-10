@@ -1,6 +1,6 @@
-import React, { useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 
-function useOnScreen(intersectionCallback, styleClass) {
+function useOnScreen(intersectionCallback) {
   const observer = useRef();
 
   const ref = useCallback(
@@ -15,9 +15,7 @@ function useOnScreen(intersectionCallback, styleClass) {
     [intersectionCallback]
   );
 
-  const targetElement = <div ref={ref} className={styleClass} />;
-
-  return targetElement;
+  return ref;
 }
 
 export default useOnScreen;

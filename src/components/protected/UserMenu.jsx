@@ -7,13 +7,11 @@ import { ReactComponent as UserIcon } from '../../assets/icons/headerbar/user.sv
 import { ReactComponent as CloseIcon } from '../../assets/icons/headerbar/close.svg';
 import Modal from '../UI/Modal';
 import { auth } from '../../firebase';
-import useViewport from '../../hooks/useViewport';
-import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
 function UserMenu({ onClose }) {
   const navigate = useNavigate('');
-  const { width } = useViewport();
 
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
   const username = useSelector((state) => state.user.username);
   const userEmail = useSelector((state) => state.user.email);
 
@@ -74,7 +72,7 @@ function UserMenu({ onClose }) {
     </div>
   );
 
-  return width < MAX_MOBILE_WIDTH ? mobileMenu : menu;
+  return isMobile ? mobileMenu : menu;
 }
 
 export default UserMenu;

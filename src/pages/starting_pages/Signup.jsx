@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import GoBackButton from '../../components/starting/GoBackBtn';
-import useViewport from '../../hooks/useViewport';
 import useInput from '../../hooks/useInput';
 import { createUser } from '../../store/userSlice';
 import {
@@ -18,10 +16,8 @@ function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { isMobile } = useSelector((state) => state.deviceWidth);
   const [submitError, setSubmitError] = useState(null);
-
-  const { width } = useViewport();
-  const breakPoint = 720;
 
   const {
     value: enteredNameValue,
@@ -94,7 +90,7 @@ function Signup() {
         <p className="mb-2 bg-red-500 text-center text-white">{submitError}</p>
       </span>
       <div className="flex  mx-auto">
-        {width > breakPoint ? (
+        {!isMobile ? (
           <div>
             <GoBackButton />
           </div>

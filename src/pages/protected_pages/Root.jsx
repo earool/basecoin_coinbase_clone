@@ -5,14 +5,11 @@ import { useSelector } from 'react-redux';
 import Header from '../../components/protected/Header';
 import NavBar from '../../components/protected/NavBar';
 import UserMenu from '../../components/protected/UserMenu';
-import useViewport from '../../hooks/useViewport';
-import { MAX_MOBILE_WIDTH } from '../../utils/constants';
 
 function Root() {
   const navigate = useNavigate();
 
-  const { width } = useViewport();
-
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
   const loginStatus = useSelector((state) => state.auth.loginStatus);
   const [isLoading, setIsLoading] = useState(true);
   const [userMenuIsShown, setUserMenuIsShown] = useState(false);
@@ -44,7 +41,7 @@ function Root() {
       <div className="mb-[80px] sm:mb-0">
         <Outlet />
       </div>
-      {width > MAX_MOBILE_WIDTH ? <Header onShowUserMenu={showUserMenu} /> : ''}
+      {!isMobile ? <Header onShowUserMenu={showUserMenu} /> : ''}
     </div>
   );
 }

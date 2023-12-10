@@ -12,18 +12,17 @@ import MarketCapPara from '../table_components/MarketCapPara';
 import WatchButton from '../table_components/WatchButton';
 import Spinner from '../../UI/Spinner';
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
-import useViewport from '../../../hooks/useViewport';
 import { createHomeUrl } from '../../../utils/buildUrl';
 import prepareSparklineData from '../../../utils/prepareSparklineData';
-import { HOME_OPTIONS, MAX_MOBILE_WIDTH } from '../../../utils/constants';
+import { HOME_OPTIONS } from '../../../utils/constants';
 
 function HomeTable() {
   const [coins, setCoins] = useState([]);
   const [option, setOption] = useState(HOME_OPTIONS[0]);
   const [seeAllItems, setSeeAllItems] = useState(false);
-  const { width } = useViewport();
 
   const watchlistIds = useSelector((state) => state.user.watchlist);
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
   const url = createHomeUrl(option);
 
   const { fetchCoins, isLoading, isSuccess, isError, error } =
@@ -84,7 +83,7 @@ function HomeTable() {
               const { labels, data } = prepareSparklineData(item.sparkline);
               const isWatched = watchlistIds.includes(item.uuid);
 
-              return width < MAX_MOBILE_WIDTH ? (
+              return isMobile ? (
                 <tr
                   className="px-3 [&>td]:my-2 hover:bg-gray-border flex items-center justify-between"
                   key={item.uuid}
