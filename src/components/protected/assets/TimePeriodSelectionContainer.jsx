@@ -1,7 +1,19 @@
 import React from 'react';
+
+import DropdownMenu from '../../UI/DropdownMenu';
 import { TIME_PERIOD_OPTIONS } from '../../../utils/constants';
 
-function TimePeriodSelectionContainer({ onTimeChange }) {
+function TimePeriodSelectionContainer({ onTimeChange, timeOption, isMobile }) {
+  if (isMobile) {
+    return (
+      <DropdownMenu
+        dropdownType="time"
+        onOptionChange={onTimeChange}
+        parentOption={timeOption}
+      />
+    );
+  }
+
   const buttonArr = TIME_PERIOD_OPTIONS.map((option) => {
     return (
       <li key={option}>
@@ -16,8 +28,11 @@ function TimePeriodSelectionContainer({ onTimeChange }) {
       </li>
     );
   });
-
-  return <ul className="flex justify-around">{buttonArr}</ul>;
+  return (
+    <div className="text-xs text-gray-500 font-semibold w-[180px]">
+      <ul className="flex justify-around">{buttonArr}</ul>
+    </div>
+  );
 }
 
 export default TimePeriodSelectionContainer;

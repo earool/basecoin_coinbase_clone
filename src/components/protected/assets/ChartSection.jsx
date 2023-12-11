@@ -54,9 +54,10 @@ function ChartSection() {
   const [coins, setCoins] = useState([]);
   const [timeOption, setTimeOption] = useState('1D');
   const { isLoading, isSuccess, error, fetchCoins } = useFetchCoinsData();
-  const { transactions, assets, assetsIds } = useSelector(
+  const { transactions, assetsIds } = useSelector(
     (state) => state.user.userAssets
   );
+  const isMobile = useSelector((state) => state.deviceWidth.isMobile);
   const url = createAssetsUrl(assetsIds, timeOption);
 
   useEffect(() => {
@@ -82,7 +83,10 @@ function ChartSection() {
       timeOption,
       transactions
     );
-    console.log(assets);
+    const selectedLabels = isMobile
+      ? labels.mobileLabels
+      : labels.wideWidthLabels;
+
     content = (
       <>
         <LineChart
@@ -93,7 +97,7 @@ function ChartSection() {
           options={options}
         />
         <div className="flex items-center justify-between text-xs text-gray-500 border-t-2 p-4">
-          {labels.wideWidthLebels.map((label) => (
+          {selectedLabels.map((label) => (
             <span key={label}>{label}</span>
           ))}
         </div>
@@ -110,9 +114,11 @@ function ChartSection() {
           <h6 className="text-xs text-gray-500 font-semibold">My balance</h6>
           <h2 className="text-3xl font-medium">USD 40.40</h2>
         </div>
-        <div className="text-xs text-gray-500 font-semibold w-[180px]">
-          <TimePeriodSelectionContainer onTimeChange={timeChangeHandler} />
-        </div>
+        <TimePeriodSelectionContainer
+          onTimeChange={timeChangeHandler}
+          timeOption={timeOption}
+          isMobile={isMobile}
+        />
       </div>
       {content}
     </div>

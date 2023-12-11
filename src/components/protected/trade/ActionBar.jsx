@@ -26,7 +26,7 @@ function ActionBar({
         <div className="flex">
           <div className="mx-2">
             <DropdownMenu
-              dropdownType="tradeTime"
+              dropdownType="time"
               onOptionChange={onTimeChange}
               parentOption={timeDropdown}
             />

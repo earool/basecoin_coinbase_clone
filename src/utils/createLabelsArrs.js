@@ -30,23 +30,24 @@ export default function createLabelsArrs(timeArr, arrLength, timePeriod) {
   const half = Math.floor(arrLength / 2);
   const quarter = Math.floor(arrLength / 4);
   const indexes = [0, half - quarter, half, half + quarter, arrLength - 1];
-  const mobileLabels = [];
-  const wideWidthLebels = [];
+  const wideWidthLabels = [];
 
   indexes.forEach((index) => {
     const date = new Date(timeArr[index]);
     if (timePeriod === '1H' || timePeriod === '1D') {
-      wideWidthLebels.push(getHourLabels(date));
+      wideWidthLabels.push(getHourLabels(date));
     } else if (timePeriod === '1Y') {
-      wideWidthLebels.push(getYearsLabels(date));
+      wideWidthLabels.push(getYearsLabels(date));
     } else {
-      wideWidthLebels.push(getMonthsLabels(date));
+      wideWidthLabels.push(getMonthsLabels(date));
     }
   });
 
-  mobileLabels.push(wideWidthLebels[0]);
-  mobileLabels.push(wideWidthLebels[half]);
-  mobileLabels.push(wideWidthLebels[arrLength - 1]);
+  const mobileLabels = [
+    wideWidthLabels[0],
+    wideWidthLabels[2],
+    wideWidthLabels[4],
+  ];
 
-  return { mobileLabels, wideWidthLebels };
+  return { mobileLabels, wideWidthLabels };
 }

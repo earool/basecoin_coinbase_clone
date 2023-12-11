@@ -28,7 +28,7 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
   const menuOptions = {
     home: HOME_OPTIONS,
     trade: TRADE_OPTIONS,
-    tradeTime: TIME_PERIOD_OPTIONS,
+    time: TIME_PERIOD_OPTIONS,
   };
 
   const classNames = {
@@ -50,7 +50,7 @@ function DropdownMenu({ dropdownType, onOptionChange, parentOption }) {
       activeLi:
         'py-1.5 pl-2 bg-gray-light-hover border border-transparent first:rounded-t-md last:rounded-b-md',
     },
-    tradeTime: {
+    time: {
       toggleButton:
         'flex relative pl-2 pr-1 h-dropdown-trade w-[58px] text-sm font-medium hover:bg-gray-light-hover border-2 border-gray-border rounded-md justify-between items-center',
       downCavet: 'w-4 text-gray-400',
