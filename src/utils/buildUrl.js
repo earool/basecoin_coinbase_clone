@@ -107,3 +107,13 @@ export function createAssetsUrl(assetsIds, timePeriod = '1D') {
 
   return `${paramsString}&${uuidsString}`;
 }
+
+export function createBuySellUrl(type, assetsIds = []) {
+  if (type === 'Buy') {
+    return buildUrl({ limit: 30 });
+  }
+
+  const uuidsString = createAssetsUrl(assetsIds);
+
+  return `${BASE_URL}?${uuidsString}`;
+}

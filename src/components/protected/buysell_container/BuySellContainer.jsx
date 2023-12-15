@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import TransactionActionButtons from './TransactionActionButtons';
 import TransactionInputContainer from './TransactionInputContainer';
+import SelectionRowsContainer from './SelectionRowsContainer';
 
 function BuySellContainer() {
   const [transactionAction, setTransactionAction] = useState('Buy');
@@ -13,14 +14,12 @@ function BuySellContainer() {
 
   return (
     <div>
-      <div>
-        <TransactionActionButtons
-          onActionChange={transactionActionChangeHandler}
-          activeAction={transactionAction}
-        />
-        <TransactionInputContainer />
-      </div>
-      <div>Select assets</div>
+      <TransactionActionButtons
+        onActionChange={transactionActionChangeHandler}
+        activeAction={transactionAction}
+      />
+      <TransactionInputContainer />
+      <SelectionRowsContainer />
     </div>
   );
 }
