@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { ReactComponent as DollarSign } from '../../../assets/icons/others/dollar.svg';
 import capitalizeWord from '../../../utils/capitalizeWord';
 
 const cssProps = {
@@ -17,6 +19,24 @@ function LogoAndName({ image, symbol, name }) {
         <h6 className="font-medium">{capitalizeWord(name)}</h6>
         <p className="text-sm text-gray-border-darker">
           {symbol.toUpperCase()}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function LogoAndNameBS({ image, name, header, isCrypto }) {
+  return (
+    <div className={cssProps.outerDiv}>
+      {isCrypto ? (
+        <img src={image} alt="logo" className={cssProps.imgWidth} />
+      ) : (
+        <DollarSign className="w-11 h-11 text-my-blue ml-[-3px]" />
+      )}
+      <div className="ml-3">
+        <h6 className="font-medium">{header}</h6>
+        <p className="text-sm text-gray-border-darker">
+          {capitalizeWord(name)}
         </p>
       </div>
     </div>

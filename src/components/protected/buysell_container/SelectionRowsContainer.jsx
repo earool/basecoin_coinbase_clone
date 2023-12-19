@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
-import LogoAndName from '../table_components/LogoAndName';
-import { ReactComponent as RightCaret } from '../../../assets/icons/others/right_caret.svg';
+import Button from '../../UI/Button';
+import SelectionRow from './SelectionRow';
+import BuySellPopOut from './BuySellPopOut';
 import useFetchCoinsData from '../../../hooks/useFetchCoins';
 import { createBuySellUrl } from '../../../utils/buildUrl';
 
 function SelectionRowsContainer() {
   const [coins, setCoins] = useState([]);
+  const [option, setOption] = useState(null);
+  const [showPopOut, setShowPopout] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const { fetchCoins, isLoading, isError, isSuccess, error } =
@@ -17,11 +20,11 @@ function SelectionRowsContainer() {
   useEffect(() => {
     const transforms = (coinsObj) => {
       const transformedCoins = coinsObj.data.coins.map(
-        ({ symbol, name, price, iconUrl }) => ({
-          symbol,
+        ({ name, price, iconUrl, uuid }) => ({
           name,
           price,
           iconUrl,
+          uuid,
         })
       );
       setCoins(transformedCoins);
@@ -29,34 +32,60 @@ function SelectionRowsContainer() {
     fetchCoins(url, transforms);
   }, [url, fetchCoins]);
 
-  let content;
+  const togglePopoutHandler = () => {
+    setShowPopout((prevs) => !prevs);
+  };
 
-  console.log(isSuccess, isLoading, isError);
-  console.log(coins[0]);
+  const selectOptionHandler = (e) => {
+    setOption(e.target.dataset.option);
+  };
+
+  let content;
+  const isCoin = option !== 'USD';
 
   if (isLoading) {
     content = <p>...loading</p>;
   } else if (isError) {
     content = <p>{error}</p>;
   } else if (isSuccess) {
-    const { symbol, name, price, iconUrl } = coins[0];
+    const {
+      name,
+      price,
+      iconUrl,
+      uuid: selectedUuid,
+    } = option ? coins.find(({ uuid }) => uuid === option) : coins[0];
     content = (
-      <div className="flex justify-between">
-        <LogoAndName image={iconUrl} symbol={symbol} name={name} />
-        <div className="flex">
-          <div className="flex flex-col">
-            <span>USD {price}</span>
-            <span>Price</span>
-          </div>
-          <div>
-            <RightCaret className="w-4 h-4" />
-          </div>
+      <>
+        <SelectionRow
+          iconUrl={iconUrl}
+          uuid={selectedUuid}
+          name={name}
+          price={price}
+          isAsset
+        />
+        <SelectionRow name="USD Wallet" price="2.56" uuid="USD" />
+        <div className="my-4 mx-2">
+          <Button color="blue" ifFull onClick={togglePopoutHandler}>
+            Buy {name}
+          </Button>
         </div>
-      </div>
+      </>
     );
   }
 
-  return <div className="pt-5 px-5">{content}</div>;
+  return (
+    <div className="pt-5 px-5">
+      {content}
+      {showPopOut && (
+        <BuySellPopOut
+          isCoin={isCoin}
+          onToggle={togglePopoutHandler}
+          onSelect={selectOptionHandler}
+          coins={coins}
+        />
+      )}
+    </div>
+  );
 }
 
 export default SelectionRowsContainer;
