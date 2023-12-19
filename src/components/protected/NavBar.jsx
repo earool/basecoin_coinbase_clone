@@ -40,7 +40,7 @@ function NavBar({ onShowUserMenu }) {
       </nav>
     </>
   ) : (
-    <nav className="h-screen flex flex-col border-x-2 border-gray-light col-start-1 col-end-2 row-start-1 row-end-3">
+    <nav className="fixed left-0 top-0 sm:w-[80px] lg:w-[200px] bg-white h-full flex flex-col border-x-2 border-gray-light">
       <div className="mt-5 mb-3 ">
         <div className="mx-auto w-[40px] lg:w-[136px]">
           <Logo className="text-my-blue cursor-pointer hover:text-my-blue-darker w-9" />

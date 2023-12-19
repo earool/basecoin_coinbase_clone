@@ -35,10 +35,10 @@ function Root() {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-rows-smGridHdr sm:grid-cols-smGrid lg:grid-cols-lgGrid">
+    <div className="flex flex-col">
       {userMenuIsShown && <UserMenu onClose={hideUserMenu} />}
       <NavBar onShowUserMenu={showUserMenu} />
-      <div className="mb-[80px] sm:mb-0">
+      <div className="mb-[80px] sm:mb-0 sm:ml-[80px] lg:ml-[200px] sm:mt-[64px] ">
         <Outlet />
       </div>
       {!isMobile ? <Header onShowUserMenu={showUserMenu} /> : ''}
