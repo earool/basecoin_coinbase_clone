@@ -65,6 +65,8 @@ function TradeTable() {
   const dataRows = coins.map((item, index) => {
     const isWatched = watchlistIds && watchlistIds.includes(item.uuid);
 
+    // make mobile arr with limited number of coins
+    // fix a bug that with invisible div that triggers isMobile
     if (isMobile) {
       return (
         <tr key={item.uuid}>

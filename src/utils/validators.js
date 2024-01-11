@@ -12,3 +12,8 @@ export function validateEmail(value) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(value);
 }
+
+export function validateBuySellInputValue(value) {
+  const regex = /^(?=.*\d?)\d*\.?\d*$/;
+  return regex.test(value);
+}

@@ -28,7 +28,10 @@ function UserMenu({ onClose }) {
   };
 
   const menu = (
-    <Modal onClose={onClose}>
+    <Modal
+      onClose={onClose}
+      styles="fixed z-20 top-[72px] right-4 bg-white w-[300px] rounded-md"
+    >
       <div className="my-4">
         <div className="mb-3 flex flex-col items-center">
           <UserIcon className="w-12 h-12 text-gray-600" />

@@ -3,10 +3,10 @@ import React from 'react';
 import FlexibleInput from './FlexibleInput';
 import { ReactComponent as ArrowsIcon } from '../../../assets/icons/others/verical_arrows.svg';
 
-function TransactionInputContainer() {
+function TransactionInputContainer({ onInputChange, value }) {
   return (
     <div className="pt-10 pb-5 relative flex justify-center border-b-2 border-gray-border">
-      <FlexibleInput />
+      <FlexibleInput value={value} onInputChange={onInputChange} />
       <div className="flex flex-col justify-center min-w-[64px] absolute right-0 bottom-[calc(50%-26px)]">
         <div className="w-8 h-8 border-0 rounded-[14px] bg-gray-light flex justify-center items-center">
           <ArrowsIcon className="w-1/2 h-1/2" />

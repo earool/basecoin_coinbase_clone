@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 
+import { validateBuySellInputValue } from '../../../utils/validators';
+
 const SCALE_STEP = 0.05;
 
 function calcMaxScale(containerWidth, textWidth, scale) {
@@ -19,15 +21,18 @@ function calcScale(containerWidth, textWidth, scale) {
   return calcScale(containerWidth, textWidth, scale - SCALE_STEP);
 }
 
-function FlexibleInput() {
+function FlexibleInput({ onInputChange, value }) {
   const [styles, setStyles] = useState({
     iWidth: '36px',
     scale: 1,
   });
   const measuringTextDiv = useRef();
 
-  // make a validation of the input
   const changeHandler = (e) => {
+    if (!validateBuySellInputValue(e.target.value)) {
+      return;
+    }
+
     const containerWidth = e.target.parentElement.parentElement.clientWidth;
     measuringTextDiv.current.innerText = e.target.value || '0';
     const textWidth = measuringTextDiv.current.clientWidth;
@@ -39,6 +44,8 @@ function FlexibleInput() {
         scale: newScale,
       };
     });
+
+    onInputChange(e.target.value);
   };
 
   return (
@@ -53,7 +60,7 @@ function FlexibleInput() {
           className="focus:outline-none text-my-blue text-[64px] box-border overflow-hidden"
           onChange={changeHandler}
           placeholder="0"
-          minLength={1}
+          value={value}
           style={{ width: styles.iWidth }}
         />
         <div

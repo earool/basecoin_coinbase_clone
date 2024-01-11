@@ -5,25 +5,28 @@ import { useSelector } from 'react-redux';
 import Header from '../../components/protected/Header';
 import NavBar from '../../components/protected/NavBar';
 import UserMenu from '../../components/protected/UserMenu';
+import Spinner from '../../components/UI/Spinner';
 
 function Root() {
   const navigate = useNavigate();
 
   const isMobile = useSelector((state) => state.deviceWidth.isMobile);
   const loginStatus = useSelector((state) => state.auth.loginStatus);
-  const [isLoading, setIsLoading] = useState(true);
+  const isUserDataFetched = useSelector((state) => state.user.userId);
   const [userMenuIsShown, setUserMenuIsShown] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     if (!loginStatus) {
       navigate('/signin');
     }
-    setIsLoading(false);
   }, [loginStatus, navigate]);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  if (!isUserDataFetched) {
+    return (
+      <div className="absolute top-1/2 left-1/2">
+        <Spinner />;
+      </div>
+    );
   }
 
   const showUserMenu = () => {
@@ -38,7 +41,7 @@ function Root() {
     <div className="flex flex-col">
       {userMenuIsShown && <UserMenu onClose={hideUserMenu} />}
       <NavBar onShowUserMenu={showUserMenu} />
-      <div className="mb-[80px] sm:mb-0 sm:ml-[80px] lg:ml-[200px] sm:mt-[64px] ">
+      <div className="mb-[80px] sm:mb-0 sm:ml-[80px] lg:ml-[200px] sm:mt-[64px] flex">
         <Outlet />
       </div>
       {!isMobile ? <Header onShowUserMenu={showUserMenu} /> : ''}
