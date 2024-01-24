@@ -14,7 +14,7 @@ export function Backdrop({ onClose }) {
   );
 }
 
-const portalElement = document.getElementById('overlays');
+export const portalElement = document.getElementById('overlays');
 
 function ModalOverlay({ children, styles }) {
   return <div className={styles}>{children}</div>;

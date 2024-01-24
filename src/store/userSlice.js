@@ -39,7 +39,7 @@ export const createUser = createAsyncThunk(
       userId: uid,
       username: enteredName,
       watchlist: [],
-      userAssets: { assetsIds: [], transactions: [], assets: { cash: 0 } },
+      userAssets: { assetsIds: [], transactions: [], assets: {}, cash: 0 },
     };
 
     await setDoc(doc(db, 'users', uid), userData);
@@ -131,6 +131,61 @@ export function toggleCoinInWatchlist(coinId) {
       await updateDoc(userDataRef, {
         watchlist: arrayUnion(coinId),
       });
+    }
+  };
+}
+
+export function makeTransaction(type, value, amount, coinId, coinIdA = null) {
+  return async (_, getState) => {
+    const state = getState();
+    const { userId } = state.user;
+    const userDataRef = doc(db, 'users', userId);
+
+    const { assets, assetsIds, cash } = state.user.userAssets;
+    let updatedAssetsIds;
+    const updatedCoin = `userAssets.assets.${coinId}`;
+
+    switch (type) {
+      case 'Buy':
+        updatedAssetsIds = !assets[coinId] ? [...assetsIds, coinId] : assetsIds;
+
+        await updateDoc(userDataRef, {
+          'userAssets.assetsIds': updatedAssetsIds,
+          [updatedCoin]: (assets[coinId] || 0) + amount,
+          'userAssets.cash': cash - value,
+        });
+        break;
+
+      case 'Sell':
+        updatedAssetsIds =
+          assets[coinId] === amount
+            ? assetsIds.filter(({ uuid }) => uuid !== coinId)
+            : assetsIds;
+
+        await updateDoc(userDataRef, {
+          'userAssets.assetsIds': updatedAssetsIds,
+          [updatedCoin]: assets[coinId] - amount,
+          'userAssets.cash': cash + value,
+        });
+        break;
+
+      case 'Convert':
+        updatedAssetsIds =
+          assets[coinId] === value
+            ? assetsIds.filter(({ uuid }) => uuid !== coinId)
+            : assetsIds;
+        updatedAssetsIds = !assets[coinIdA]
+          ? [...assetsIds, coinIdA]
+          : assetsIds;
+
+        await updateDoc(userDataRef, {
+          'userAssets.assetsIds': updatedAssetsIds,
+          [updatedCoin]: assets[coinId] - value,
+          [`userAssets.assets.${coinIdA}`]: (assets[coinIdA] || 0) - amount,
+        });
+        break;
+      default:
+        console.log('something went wrong!');
     }
   };
 }

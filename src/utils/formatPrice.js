@@ -14,6 +14,10 @@ function getNumberOfCommas(len) {
 }
 
 function getSignificantFigures(afterDecimal) {
+  if (!afterDecimal) {
+    return '00';
+  }
+
   const arr = afterDecimal.split('');
 
   const sigFigs = [];
@@ -28,6 +32,7 @@ function getSignificantFigures(afterDecimal) {
   return sigFigs.join('');
 }
 
+// handle cases where the input is null or undefined
 function formatPrice(price) {
   const [beforeDecimal, afterDecimal] =
     typeof price === 'number' ? price.toString().split('.') : price.split('.');
