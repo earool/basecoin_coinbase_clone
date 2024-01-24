@@ -1,14 +1,10 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useEffect, useRef } from 'react';
 
 import PopoutHeader from './PopoutHeader';
 import OrderPreviewPopout from './OrderPreviewPopout';
 import SelectPopout from './SelectPopout';
 import CashPopout from './CashPopout';
-import { Backdrop } from '../../UI/Modal';
 
-const portalElement = document.getElementById('overlays');
 const popoutTitle = {
   preview: 'Order preview',
   fiat: 'Pay with',
@@ -16,9 +12,16 @@ const popoutTitle = {
   own: 'Select asset',
 };
 
-function BuySellPopout({ onClose, data, onOptionChange }) {
+function BuySellPopout({ onClose, data, onOptionChange, onHeightChange }) {
+  const contentHeightRef = useRef(null);
   const { popoutType } = data;
   let content;
+
+  useEffect(() => {
+    if (contentHeightRef.current) {
+      onHeightChange(contentHeightRef.current.offsetHeight);
+    }
+  }, [onHeightChange]);
 
   // data depends on popoutType
   if (popoutType === 'preview') {
@@ -33,13 +36,13 @@ function BuySellPopout({ onClose, data, onOptionChange }) {
   }
 
   return (
-    <>
-      {ReactDOM.createPortal(<Backdrop onClose={onClose} />, portalElement)}
-      <div className="z-20 absolute top-0 left-0 w-full bg-white pt-5 px-5 pb-7 flex flex-col border-gray-light rounded">
-        <PopoutHeader title={popoutTitle[popoutType]} onClose={onClose} />
-        {content}
-      </div>
-    </>
+    <div
+      ref={contentHeightRef}
+      className="z-20 absolute top-0 left-0 w-full bg-white pt-5 px-5 pb-7 flex flex-col border-gray-light rounded"
+    >
+      <PopoutHeader title={popoutTitle[popoutType]} onClose={onClose} />
+      {content}
+    </div>
   );
 }
 

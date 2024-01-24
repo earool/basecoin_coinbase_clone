@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import TransactionActionButtons from './TransactionActionButtons';
 import TransactionInputContainer from './TransactionInputContainer';
@@ -7,13 +7,23 @@ import Button from '../../UI/Button';
 import BuySellPopout from './BuySellPopout';
 import Spinner from '../../UI/Spinner';
 import useFetchBuySellData from '../../../hooks/useFetchBuySellData';
+import useAnimatingPopout from '../../../hooks/useAnimatingPopout';
 
 function BuySellContainer() {
   const [transactionAction, setTransactionAction] = useState('Buy');
   const [options, setOptions] = useState({ option1: null, option2: null });
-  const [showPopout, setShowPopout] = useState(false);
   const [popoutData, setPopoutData] = useState(null);
   const [transactionInputValue, setTransactionInputValue] = useState('');
+  const contentHeightRef = useRef(null);
+
+  const {
+    isShowed,
+    isAnimating,
+    height,
+    changeHeightRef,
+    togglePopout,
+    placeholder,
+  } = useAnimatingPopout(500);
 
   const {
     assetsData,
@@ -30,6 +40,12 @@ function BuySellContainer() {
       setOptions({ option1: assetsData[0], option2: dollarOption });
     }
   }, [assetsData, dollarOption, isSuccess]);
+
+  useEffect(() => {
+    if (contentHeightRef.current) {
+      changeHeightRef(contentHeightRef.current.offsetHeight);
+    }
+  }, [changeHeightRef]);
 
   const transactionActionChangeHandler = (action) => {
     setTransactionAction(action);
@@ -71,7 +87,7 @@ function BuySellContainer() {
     setOptions((prevs) => {
       return { ...prevs, [option]: { ...selected } };
     });
-    setShowPopout(false);
+    togglePopout();
   };
 
   // handling for providing the appropriate data for popouts,
@@ -101,11 +117,7 @@ function BuySellContainer() {
     } else {
       setPopoutData({ ...dollarOption, popoutType });
     }
-    setShowPopout((prevs) => !prevs);
-  };
-
-  const closePopoutHandler = () => {
-    setShowPopout(false);
+    togglePopout();
   };
 
   let content;
@@ -119,9 +131,18 @@ function BuySellContainer() {
   } else if (isError) {
     content = <p>{error}</p>;
   } else if (isSuccess && options.option1) {
-    content = (
-      <>
-        <div className="main-container">
+    if (isAnimating) {
+      content = placeholder;
+    } else {
+      content = isShowed ? (
+        <BuySellPopout
+          onHeightChange={changeHeightRef}
+          onClose={togglePopout}
+          data={popoutData}
+          onOptionChange={optionChangeHandler}
+        />
+      ) : (
+        <div className="pb-4" ref={contentHeightRef}>
           <TransactionActionButtons
             onActionChange={transactionActionChangeHandler}
             activeAction={transactionAction}
@@ -146,18 +167,18 @@ function BuySellContainer() {
             </Button>
           </div>
         </div>
-        {showPopout && (
-          <BuySellPopout
-            onClose={closePopoutHandler}
-            data={popoutData}
-            onOptionChange={optionChangeHandler}
-          />
-        )}
-      </>
+      );
+    }
+
+    return (
+      <div
+        style={{ height }}
+        className="min-w-[300px] relative transition-[height] duration-300 ease-linear bg-white rounded-lg"
+      >
+        {content}
+      </div>
     );
   }
-
-  return <div className="min-w-[300px] relative">{content}</div>;
 }
 
 export default BuySellContainer;
