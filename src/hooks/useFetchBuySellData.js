@@ -33,10 +33,8 @@ function useFetchBuySellData() {
     try {
       setIsLoading(true);
       const response1 = await fetch(assetsUrl);
-      const response2 = await fetch(ownAssetsUrl);
 
       const { data: rawAssetsData } = await response1.json();
-      const { data: rawOwnAssetsData } = await response2.json();
 
       const transformedAssetsData = rawAssetsData.coins.map(
         ({ name, price, iconUrl, uuid, symbol }) => ({
@@ -48,19 +46,23 @@ function useFetchBuySellData() {
         })
       );
 
-      const transformedOwnAssetsData = rawOwnAssetsData.coins.map(
-        ({ name, price, iconUrl, uuid, symbol }) => ({
-          name,
-          price,
-          iconUrl,
-          uuid,
-          symbol,
-          amount: assets[uuid],
-        })
-      );
+      if (assetsIds.length) {
+        const response2 = await fetch(ownAssetsUrl);
+        const { data: rawOwnAssetsData } = await response2.json();
+        const transformedOwnAssetsData = rawOwnAssetsData.coins.map(
+          ({ name, price, iconUrl, uuid, symbol }) => ({
+            name,
+            price,
+            iconUrl,
+            uuid,
+            symbol,
+            amount: assets[uuid],
+          })
+        );
+        setOwnAssetsData(transformedOwnAssetsData);
+      }
 
       setAssetsData(transformedAssetsData);
-      setOwnAssetsData(transformedOwnAssetsData);
 
       setIsSucces(true);
     } catch (errorMessage) {
