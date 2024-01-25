@@ -32,7 +32,6 @@ function FlexibleInput({ onInputChange, value }) {
     if (!validateBuySellInputValue(e.target.value)) {
       return;
     }
-
     const containerWidth = e.target.parentElement.parentElement.clientWidth;
     measuringTextDiv.current.innerText = e.target.value || '0';
     const textWidth = measuringTextDiv.current.clientWidth;
@@ -61,7 +60,7 @@ function FlexibleInput({ onInputChange, value }) {
           onChange={changeHandler}
           placeholder="0"
           value={value}
-          style={{ width: styles.iWidth }}
+          style={{ width: value === '' ? '36px' : styles.iWidth }}
         />
         <div
           ref={measuringTextDiv}

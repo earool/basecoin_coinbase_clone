@@ -66,6 +66,8 @@ function BuySellContainer() {
         return { option1: ownAssetsData[0], option2: assetsData[0] };
       });
     }
+
+    setTransactionInputValue('');
   };
 
   const buttonText = {
@@ -173,7 +175,7 @@ function BuySellContainer() {
     return (
       <div
         style={{ height }}
-        className="min-w-[300px] relative transition-[height] duration-300 ease-linear bg-white rounded-lg"
+        className="min-w-[300px] relative transition-[height] duration-500 ease-linear bg-white rounded-lg"
       >
         {content}
       </div>
