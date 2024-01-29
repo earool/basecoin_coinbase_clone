@@ -4,7 +4,7 @@ import { ReactComponent as LeftArrow } from '../../../assets/icons/others/left_a
 
 function PopoutHeader({ onClose, title }) {
   return (
-    <div className="pb-4 flex items-center relative justify-center">
+    <div className="pb-4 flex items-center relative justify-center w-full">
       <button
         className="w-6 h-6 absolute left-0"
         type="button"

@@ -11,6 +11,8 @@ export const TIME_PERIOD_OPTIONS = ['1D', '1H', '1W', '1M', '1Y'];
 
 export const TRANSACTION_ACTION_BUTTONS = ['Buy', 'Sell', 'Convert'];
 
+export const ADD_WITHDRAW_BUTTONS = ['Add cash', 'Cash out'];
+
 export const MONTHS = [
   'JAN',
   'FEB',

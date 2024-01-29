@@ -6,7 +6,7 @@ import { ReactComponent as Logo } from '../../assets/icons/headerbar/logo.svg';
 import { ReactComponent as Hamburger } from '../../assets/icons/headerbar/hamburger_menu.svg';
 import { ReactComponent as Assets } from '../../assets/icons/navbar/assets.svg';
 import { ReactComponent as HomeIcon } from '../../assets/icons/navbar/homeIcon.svg';
-import { ReactComponent as Pay } from '../../assets/icons/navbar/pay.svg';
+import { ReactComponent as Wallet } from '../../assets/icons/navbar/wallet.svg';
 import { ReactComponent as Trade } from '../../assets/icons/navbar/trade.svg';
 
 function NavBar({ onShowUserMenu }) {
@@ -20,8 +20,8 @@ function NavBar({ onShowUserMenu }) {
       <IconLink path="/assets" name="Assets">
         <Assets />
       </IconLink>
-      <IconLink path="/pay" name="Pay">
-        <Pay />
+      <IconLink path="/wallet" name="Wallet">
+        <Wallet />
       </IconLink>
       <IconLink path="/trade" name="Trade">
         <Trade />
