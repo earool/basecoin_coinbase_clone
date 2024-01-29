@@ -45,10 +45,15 @@ function formatPrice(price) {
     formattedBeforeDecimal[index] = `,${formattedBeforeDecimal[index]}`;
   });
 
-  const formattedAfterDecimal =
-    beforeDecimal === '0'
-      ? getSignificantFigures(afterDecimal)
-      : afterDecimal.slice(0, 2);
+  let formattedAfterDecimal;
+  if (!afterDecimal) {
+    formattedAfterDecimal = '00';
+  } else {
+    formattedAfterDecimal =
+      beforeDecimal === '0'
+        ? getSignificantFigures(afterDecimal)
+        : afterDecimal.slice(0, 2);
+  }
 
   return `${formattedBeforeDecimal.join('')}.${formattedAfterDecimal}`;
 }
