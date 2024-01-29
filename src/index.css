@@ -35,6 +35,10 @@
     @apply bg-white rounded-lg border-2 border-gray-border;
   }
 
+  .main-container-no-tb {
+    @apply bg-white rounded-lg border-2 border-gray-border border-t-0;
+  }
+
   /* table */
   .table-styling th,
   .table-styling td {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import TransactionActionButtons from './TransactionActionButtons';
 import TransactionInputContainer from './TransactionInputContainer';
@@ -14,14 +14,14 @@ function BuySellContainer() {
   const [options, setOptions] = useState({ option1: null, option2: null });
   const [popoutData, setPopoutData] = useState(null);
   const [transactionInputValue, setTransactionInputValue] = useState('');
-  const contentHeightRef = useRef(null);
 
   const {
     isShowed,
     isAnimating,
-    height,
-    changeHeightRef,
     togglePopout,
+    ContentWrapper,
+    DefaultViewWrapper,
+    PopoutViewWrapper,
     placeholder,
   } = useAnimatingPopout(500);
 
@@ -40,12 +40,6 @@ function BuySellContainer() {
       setOptions({ option1: assetsData[0], option2: dollarOption });
     }
   }, [assetsData, dollarOption, isSuccess]);
-
-  useEffect(() => {
-    if (contentHeightRef.current) {
-      changeHeightRef(contentHeightRef.current.offsetHeight);
-    }
-  }, [changeHeightRef]);
 
   const transactionActionChangeHandler = (action) => {
     setTransactionAction(action);
@@ -137,14 +131,15 @@ function BuySellContainer() {
       content = placeholder;
     } else {
       content = isShowed ? (
-        <BuySellPopout
-          onHeightChange={changeHeightRef}
-          onClose={togglePopout}
-          data={popoutData}
-          onOptionChange={optionChangeHandler}
-        />
+        <PopoutViewWrapper>
+          <BuySellPopout
+            onClose={togglePopout}
+            data={popoutData}
+            onOptionChange={optionChangeHandler}
+          />
+        </PopoutViewWrapper>
       ) : (
-        <div className="pb-4" ref={contentHeightRef}>
+        <DefaultViewWrapper>
           <TransactionActionButtons
             onActionChange={transactionActionChangeHandler}
             activeAction={transactionAction}
@@ -168,18 +163,11 @@ function BuySellContainer() {
               {buttonText[transactionAction]}
             </Button>
           </div>
-        </div>
+        </DefaultViewWrapper>
       );
     }
 
-    return (
-      <div
-        style={{ height }}
-        className="min-w-[300px] relative transition-[height] duration-500 ease-linear bg-white rounded-lg"
-      >
-        {content}
-      </div>
-    );
+    return <ContentWrapper>{content}</ContentWrapper>;
   }
 }
 

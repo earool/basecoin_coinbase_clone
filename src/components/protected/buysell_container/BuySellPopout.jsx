@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 import PopoutHeader from './PopoutHeader';
 import OrderPreviewPopout from './OrderPreviewPopout';
@@ -12,16 +12,9 @@ const popoutTitle = {
   own: 'Select asset',
 };
 
-function BuySellPopout({ onClose, data, onOptionChange, onHeightChange }) {
-  const contentHeightRef = useRef(null);
+function BuySellPopout({ onClose, data, onOptionChange }) {
   const { popoutType } = data;
   let content;
-
-  useEffect(() => {
-    if (contentHeightRef.current) {
-      onHeightChange(contentHeightRef.current.offsetHeight);
-    }
-  }, [onHeightChange]);
 
   // data depends on popoutType
   if (popoutType === 'preview') {
@@ -36,13 +29,10 @@ function BuySellPopout({ onClose, data, onOptionChange, onHeightChange }) {
   }
 
   return (
-    <div
-      ref={contentHeightRef}
-      className="z-20 absolute top-0 left-0 w-full bg-white pt-5 px-5 pb-7 flex flex-col border-gray-light rounded"
-    >
+    <>
       <PopoutHeader title={popoutTitle[popoutType]} onClose={onClose} />
       {content}
-    </div>
+    </>
   );
 }
 
