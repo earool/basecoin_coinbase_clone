@@ -1,15 +1,24 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import PopoutHeader from '../buysell_container/PopoutHeader';
 import formatPrice from '../../../utils/formatPrice';
 import Button from '../../UI/Button';
+import { makeCashAction } from '../../../store/userSlice';
 
-function WalletPopout({ action, onToggle, value }) {
-  const title = action === 'Cash out' ? 'Cash out preview' : 'Add cash preview';
-  const fee = 0.55;
+function WalletPopout({ action, onToggle, value, fee, resetInputValue }) {
+  const dispatch = useDispatch();
+
+  const isWithdraw = action === 'Cash out';
+  const title = isWithdraw ? 'Cash out preview' : 'Add cash preview';
+
+  const handleCashAction = () => {
+    dispatch(makeCashAction(action, value - fee));
+    onToggle();
+    resetInputValue();
+  };
 
   return (
-    // <div className="flex flex-col items-center pt-5 px-5 pb-7 relative">
     <>
       <PopoutHeader onClose={onToggle} title={title} />
       <div className="text-my-blue text-[36px] mb-3">
@@ -29,13 +38,12 @@ function WalletPopout({ action, onToggle, value }) {
           <p>${formatPrice(value)}</p>
         </div>
         <div className="mt-8">
-          <Button color="blue" ifFull>
+          <Button color="blue" ifFull onClick={handleCashAction}>
             {action}
           </Button>
         </div>
       </div>
     </>
-    // </div>
   );
 }
 

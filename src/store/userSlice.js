@@ -189,3 +189,22 @@ export function makeTransaction(type, value, amount, coinId, coinIdA = null) {
     }
   };
 }
+
+export function makeCashAction(type, amount) {
+  return async (_, getState) => {
+    const state = getState();
+    const { userId } = state.user;
+    const userDataRef = doc(db, 'users', userId);
+
+    const { cash } = state.user.userAssets;
+
+    const updatedCashAmount =
+      type === 'Cash out' ? Math.max(0, cash - amount) : cash + amount;
+
+    const formattedAmount = parseFloat(updatedCashAmount.toFixed(2));
+
+    await updateDoc(userDataRef, {
+      'userAssets.cash': formattedAmount,
+    });
+  };
+}

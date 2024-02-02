@@ -27,3 +27,5 @@ export const MONTHS = [
   'NOV',
   'DEC',
 ];
+
+export const FEE = 0.55;
